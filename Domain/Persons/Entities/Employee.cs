@@ -1,8 +1,8 @@
-﻿using CarRentalService.Domain.Entities.Rentals;
+﻿using CarRentalService.Domain.Rentals.Entities;
 
-namespace CarRentalService.Domain.Entities.Persons;
+namespace CarRentalService.Domain.Persons.Entities;
 
-public class Employee : Person
+public abstract class Employee : Person
 {
     public string EmployeeNumber { get; set; } = string.Empty;
     
@@ -12,8 +12,6 @@ public class Employee : Person
     
     public required decimal Salary { get; set; }
     
-    public required EmployeeType EmployeeType { get; set; }
-
     public required string Password { get; set; }
     
     public ICollection<Rental>? Rentals { get; set; }

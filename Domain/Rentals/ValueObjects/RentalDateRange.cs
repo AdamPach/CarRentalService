@@ -1,4 +1,4 @@
-﻿namespace CarRentalService.Domain.Entities.Rentals;
+﻿namespace CarRentalService.Domain.Rentals.ValueObjects;
 
 public record RentalDateRange(DateTime StartDate, DateTime EndDate)
 {

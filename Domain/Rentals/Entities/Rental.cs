@@ -1,8 +1,10 @@
 ﻿using CarRentalService.Domain.Entities.Common.Interfaces;
-using CarRentalService.Domain.Entities.Persons;
-using CarRentalService.Domain.Entities.Vehicles;
+using CarRentalService.Domain.Persons.Entities;
+using CarRentalService.Domain.Rentals.Enums;
+using CarRentalService.Domain.Rentals.ValueObjects;
+using CarRentalService.Domain.Vehicles.Entities;
 
-namespace CarRentalService.Domain.Entities.Rentals;
+namespace CarRentalService.Domain.Rentals.Entities;
 
 public class Rental : IEntity
 {

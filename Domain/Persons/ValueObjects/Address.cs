@@ -1,4 +1,4 @@
-﻿namespace CarRentalService.Domain.Entities.Persons;
+﻿namespace CarRentalService.Domain.Persons.ValueObjects;
 
 public record Address(string Street, string City, string ZipCode)
 {

@@ -1,6 +1,6 @@
-﻿using CarRentalService.Domain.Entities.Rentals;
+﻿using CarRentalService.Domain.Rentals.Entities;
 
-namespace CarRentalService.Domain.Entities.Persons;
+namespace CarRentalService.Domain.Persons.Entities;
 
 public class Customer : Person
 {

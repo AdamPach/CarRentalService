@@ -1,6 +1,7 @@
 ﻿using CarRentalService.Domain.Entities.Common.Interfaces;
+using CarRentalService.Domain.Persons.ValueObjects;
 
-namespace CarRentalService.Domain.Entities.Persons;
+namespace CarRentalService.Domain.Persons.Entities;
 
 public abstract class Person : IEntity
 {

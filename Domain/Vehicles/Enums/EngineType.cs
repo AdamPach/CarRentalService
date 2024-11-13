@@ -1,4 +1,4 @@
-﻿namespace CarRentalService.Domain.Entities.Vehicles;
+﻿namespace CarRentalService.Domain.Vehicles.Enums;
 
 public enum EngineType
 {

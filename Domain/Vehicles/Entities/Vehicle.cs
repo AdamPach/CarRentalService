@@ -1,7 +1,9 @@
 ﻿using CarRentalService.Domain.Entities.Common.Interfaces;
-using CarRentalService.Domain.Entities.Rentals;
+using CarRentalService.Domain.Rentals.Entities;
+using CarRentalService.Domain.Vehicles.Enums;
+using CarRentalService.Domain.Vehicles.ValueObjects;
 
-namespace CarRentalService.Domain.Entities.Vehicles;
+namespace CarRentalService.Domain.Vehicles.Entities;
 
 public abstract class Vehicle : IEntity
 {
