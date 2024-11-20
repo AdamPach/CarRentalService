@@ -1,4 +1,4 @@
-﻿namespace CarRentalService.Domain.Persons.DTOs.Customers;
+﻿namespace CarRentalService.UseCases.Persons.Customers.DTOs;
 
 public class CustomerPreviewDto
 {

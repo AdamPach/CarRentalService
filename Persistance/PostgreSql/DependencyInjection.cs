@@ -16,7 +16,7 @@ public static class DependencyInjection
     {
         hostBuilder.Services.AddSingleton<DatabaseConnectionFactory>();
         
-        hostBuilder.Services.AddScoped(typeof(SqlSpecificationMapper<>));
+        hostBuilder.Services.AddScoped(typeof(SpecificationToSqlBuilderMapper<>));
         hostBuilder.Services.AddScoped<IDataMapper<Customer>, CustomerDataMapper>();
         hostBuilder.Services.AddScoped<IRepository<Customer>, CustomerRepository>();
     }

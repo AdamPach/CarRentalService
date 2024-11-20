@@ -1,4 +1,4 @@
-﻿namespace CarRentalService.Domain.Entities.Common.Interfaces;
+﻿    namespace CarRentalService.Domain.Common.Interfaces;
 
 public interface IEntity
 {

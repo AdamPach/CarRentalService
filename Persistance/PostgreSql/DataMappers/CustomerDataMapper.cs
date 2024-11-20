@@ -11,36 +11,42 @@ namespace CarRentalService.Persistence.PostgreSql.DataMappers;
 
 internal class CustomerDataMapper : IDataMapper<Customer>
 {
-    private readonly SqlSpecificationMapper<Customer> _mapper;
+    private readonly SpecificationToSqlBuilderMapper<Customer> _mapper;
     private readonly DatabaseConnectionFactory _connectionFactory;
 
     public CustomerDataMapper(
-        SqlSpecificationMapper<Customer> mapper, 
+        SpecificationToSqlBuilderMapper<Customer> mapper, 
         DatabaseConnectionFactory databaseConnectionFactory)
     {
         _mapper = mapper;
         _connectionFactory = databaseConnectionFactory;
     }
 
-    private const string SelectTemplate = @"SELECT * FROM ""Customer"" ""c"" /**innerjoin**/  /**where**/";
-
+    private const string SelectTemplate = 
+        @"SELECT * FROM ""Customer"" /**innerjoin**//**where**/";
     public async Task<Result<IEnumerable<Customer>>> Select(ISpecification<Customer> specification)
     {
-        var queryBuilder = new SqlBuilder();
+        var queryBuilderResult = _mapper.Map(specification);
+
+        if (queryBuilderResult.IsFailed)
+        {
+            return Result.Fail(queryBuilderResult.Errors);
+        }
+            
+        queryBuilderResult.Value.InnerJoin(@"""Person"" ON ""Customer"".""Id"" = ""Person"".""Id""");
         
-        queryBuilder.InnerJoin(@"""Person"" ""p"" ON ""c"".""PersonId"" = ""p"".""Id""");
-        
-        var select = queryBuilder.AddTemplate(SelectTemplate); 
+        var select = queryBuilderResult.Value.AddTemplate(SelectTemplate); 
         
         await using var connection = await _connectionFactory.CreateConnection();
         
         var customers = await connection.QueryAsync<Customer, Address, Customer>(
             select.RawSql,
-            (customer, address) =>
+            param: select.Parameters,
+            map:(customer, address) =>
             {
                 customer.Address = address;
                 return customer;
-            }, splitOn: "Street");
+            },splitOn: "Street");
         
         return Result.Ok(customers);
     }

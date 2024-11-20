@@ -13,8 +13,8 @@ Welcome to your new app.
 
     protected override async Task OnInitializedAsync()
     {
-        var customers = await CustomerService.GetAllCustomersAsync();
-        
+        var customer = await CustomerService.GetCustomerByIdAsync(Guid.Parse("0438ada3-736a-4701-a821-42b3bf1d26bc"));
+        // var customers = await CustomerService.GetAllCustomersAsync();
         await base.OnInitializedAsync();
     }
 }

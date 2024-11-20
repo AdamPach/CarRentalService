@@ -1,4 +1,4 @@
-﻿using CarRentalService.Domain.Entities.Common.Interfaces;
+﻿using CarRentalService.Domain.Common.Interfaces;
 using CarRentalService.Domain.Rentals.Entities;
 using CarRentalService.Domain.Vehicles.Enums;
 using CarRentalService.Domain.Vehicles.ValueObjects;

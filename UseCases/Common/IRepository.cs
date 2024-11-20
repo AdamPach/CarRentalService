@@ -1,4 +1,4 @@
-﻿using CarRentalService.Domain.Entities.Common.Interfaces;
+﻿using CarRentalService.Domain.Common.Interfaces;
 using CarRentalService.UseCases.Common.Specification;
 using FluentResults;
 

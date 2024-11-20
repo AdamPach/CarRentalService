@@ -1,6 +1,6 @@
-﻿using CarRentalService.Domain.Persons.DTOs.Customers;
-using CarRentalService.Domain.Persons.Entities;
+﻿using CarRentalService.Domain.Persons.Entities;
 using CarRentalService.UseCases.Common;
+using CarRentalService.UseCases.Persons.Customers.DTOs;
 using FluentResults;
 
 namespace CarRentalService.UseCases.Persons.Customers.Mappers;

@@ -1,4 +1,4 @@
-﻿using CarRentalService.Domain.Entities.Common.Interfaces;
+﻿using CarRentalService.Domain.Common.Interfaces;
 using CarRentalService.UseCases.Common;
 using CarRentalService.UseCases.Common.Specification;
 using FluentResults;
@@ -23,9 +23,26 @@ internal abstract class Repository<T>(IDataMapper<T> dataMapper) : IRepository<T
         
         var result =  await DataMapper.Select(specification);
         
+        return GetSingleEntity(result);
+    }
+
+    private Result<T> GetSingleEntity(Result<IEnumerable<T>> result)
+    {
         if (result.IsFailed)
         {
+            return Result.Fail<T>("Searching for entity failed");
+        }
+        
+        var count = result.Value.Count();
+        
+        if (count == 0)
+        {
             return Result.Fail<T>("Entity not found");
+        }
+        
+        if (count > 1)
+        {
+            return Result.Fail<T>("More than one entity found");
         }
         
         return result.Value.Single();

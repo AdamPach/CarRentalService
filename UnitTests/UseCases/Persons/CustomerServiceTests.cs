@@ -1,8 +1,8 @@
-﻿using CarRentalService.Domain.Persons.DTOs.Customers;
-using CarRentalService.Domain.Persons.Entities;
+﻿using CarRentalService.Domain.Persons.Entities;
 using CarRentalService.Domain.Persons.ValueObjects;
 using CarRentalService.UseCases.Common;
 using CarRentalService.UseCases.Persons.Customers;
+using CarRentalService.UseCases.Persons.Customers.DTOs;
 using CarRentalService.UseCases.Persons.Customers.Mappers;
 using FluentAssertions;
 using FluentResults;
@@ -32,19 +32,44 @@ public class CustomerServiceTests
         PhoneNumber = testCustomer.PhoneNumber,
         RegistrationDate = testCustomer.RegistrationDate,
     };
+
+    private static CustomerDetailDto testCustomerDetailDto = new CustomerDetailDto()
+    {
+        Id = testCustomer.Id,
+        FirstName = testCustomer.FirstName,
+        LastName = testCustomer.LastName,
+        DateOfBirth = testCustomer.DateOfBirth,
+        Email = testCustomer.Email,
+        PhoneNumber = testCustomer.PhoneNumber,
+        City = testCustomer.Address?.City,
+        Street = testCustomer.Address?.Street,
+        ZipCode = testCustomer.Address?.ZipCode,
+        LicenseNumber = testCustomer.LicenseNumber,
+        RegistrationDate = testCustomer.RegistrationDate
+    };
+    
+    private IMapper<Customer, CustomerPreviewDto> _previewMapper;
+    private IMapper<Customer, CustomerDetailDto> _detailMapper;
+    private IRepository<Customer> _repository;
+    
+    public CustomerServiceTests()
+    {
+        _previewMapper = Substitute.For<IMapper<Customer, CustomerPreviewDto>>();
+        _detailMapper = Substitute.For<IMapper<Customer, CustomerDetailDto>>();
+        _repository = Substitute.For<IRepository<Customer>>();
+    }
     
     [Fact]
     public async Task Can_Read_All_Customers()
     {
         //Arrange
         var testCustomers = new List<Customer> { testCustomer };
-        var mapper = new CustomerToPreviewDtoMapper();
-        var repository = Substitute.For<IRepository<Customer>>();
 
-        repository.GetAllAsync().Returns(testCustomers);
-        var sut = new CustomerService(mapper, repository);
+        _previewMapper = new CustomerToPreviewDtoMapper();
+        _repository.GetAllAsync().Returns(testCustomers);
+        var sut = new CustomerService(_previewMapper, _repository, _detailMapper);
+        
         //Act
-
         var result = await sut.GetAllCustomersAsync();
 
         //Assert
@@ -57,16 +82,50 @@ public class CustomerServiceTests
     public async Task Can_Raise_Error_When_Reading_All_Customers()
     {
         //Arrange
-        var mapper = Substitute.For<IMapper<Customer, CustomerPreviewDto>>();
-        var repository = Substitute.For<IRepository<Customer>>();
-        repository.GetAllAsync().Returns(Result.Fail("Error"));
+        _repository.GetAllAsync().Returns(Result.Fail("Error"));
         
-        var sut = new CustomerService(mapper, repository);
+        var sut = new CustomerService(_previewMapper, _repository, _detailMapper);
         //Act
 
         var result = await sut.GetAllCustomersAsync();
 
         //Assert
+        result.IsFailed.Should().BeTrue();
+    }
+    
+    [Fact]
+    public async Task Can_Read_Customer_By_Id()
+    {
+        //Arrange
+        _repository.GetByIdAsync(testCustomer.Id).Returns(testCustomer);
+
+        _detailMapper = new CustomerToDetailDtoMapper();
+        
+        var sut = new CustomerService(_previewMapper, _repository, _detailMapper);
+        
+        //Act
+        
+        var result = await sut.GetCustomerByIdAsync(testCustomer.Id);
+        
+        //Assert
+
+        result.IsSuccess.Should().BeTrue();
+        result.Value.Should().BeEquivalentTo(testCustomerDetailDto);
+    }
+
+    [Fact]
+    public async Task Can_Raise_Error_When_Not_Found()
+    {
+        _repository.GetByIdAsync(testCustomer.Id).Returns(Result.Fail("Not found"));
+        
+        var sut = new CustomerService(_previewMapper, _repository, _detailMapper);
+        
+        //Act
+        
+        var result = await sut.GetCustomerByIdAsync(testCustomer.Id);
+        
+        //Assert
+        
         result.IsFailed.Should().BeTrue();
     }
 }

@@ -11,8 +11,8 @@
 );
 
 CREATE TABLE IF NOT EXISTS "Customer" (
-    "PersonId" UUID PRIMARY KEY NOT NULL,
+    "Id" UUID PRIMARY KEY NOT NULL,
     "RegistrationDate" TIMESTAMP NOT NULL,
     "LicenseNumber" VARCHAR(50) NOT NULL,
-    CONSTRAINT "FK_Customer_Person" FOREIGN KEY ("PersonId") REFERENCES "Person"("Id")
+    CONSTRAINT "FK_Customer_Person" FOREIGN KEY ("Id") REFERENCES "Person"("Id")
 );
