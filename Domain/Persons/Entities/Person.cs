@@ -18,4 +18,6 @@ public abstract class Person : IEntity
     public required string PhoneNumber { get; set; }
     
     public Address? Address { get; set; }
+    
+    public string FullName => $"{FirstName} {LastName}";
 }
