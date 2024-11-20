@@ -1,0 +1,55 @@
+﻿@page "/customers"
+
+@using CarRentalService.UseCases.Persons.Customers
+@using CarRentalService.UseCases.Persons.Customers.DTOs
+
+@rendermode InteractiveServer
+
+@inject ICustomerService CustomerService
+@inject NavigationManager NavigationManager
+
+<MudTable
+    T="@CustomerPreviewDto"
+    Items="@_customerPreviewDtos"
+    Hover="true"
+    RowClass="cursor-pointer"
+    OnRowClick="@RowClickHandler">
+    
+    <HeaderContent>
+        <MudTh>Id</MudTh>
+        <MudTh>Full Name</MudTh>
+        <MudTh>License Number</MudTh>
+        <MudTh>Phone Number</MudTh>
+        <MudTh>Registration Date</MudTh>
+    </HeaderContent>
+    
+    <RowTemplate>
+        <MudTd DataLabel="Id">@context.Id</MudTd>
+        <MudTd DataLabel="Full Name">@context.FullName</MudTd>
+        <MudTd DataLabel="License Number">@context.LicenseNumber</MudTd>
+        <MudTd DataLabel="Phone Number">@context.PhoneNumber</MudTd>
+        <MudTd DataLabel="Registration Date">@context.RegistrationDate</MudTd>
+    </RowTemplate>
+    
+</MudTable>
+
+@code {
+    private List<CustomerPreviewDto> _customerPreviewDtos = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        var customers = await CustomerService.GetAllCustomersAsync();
+
+        if (customers.IsFailed)
+        {
+            return;
+        }
+
+        _customerPreviewDtos = customers.Value.ToList(); 
+    }
+
+    private void RowClickHandler(TableRowClickEventArgs<CustomerPreviewDto> obj)
+    {
+        NavigationManager.NavigateTo($"/customers/{obj.Item!.Id}");
+    }
+}

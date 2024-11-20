@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using System.Data.Common;
+using Microsoft.Extensions.Configuration;
 using Npgsql;
 
 namespace CarRentalService.Persistence.PostgreSql.Database;
@@ -17,7 +18,7 @@ public class DatabaseConnectionFactory : IDisposable
         _dataSource = NpgsqlDataSource.Create(configuration.GetConnectionString("PostgreSql")!);
     }
     
-    public async Task<NpgsqlConnection> CreateConnection()
+    public async Task<DbConnection> CreateConnection()
     {
         return await _dataSource.OpenConnectionAsync();
     }

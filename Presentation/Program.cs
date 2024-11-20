@@ -1,6 +1,7 @@
 using CarRentalService.Persistence.PostgreSql;
 using CarRentalService.Presentation.Components;
 using CarRentalService.UseCases;
+using MudBlazor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +11,7 @@ builder.Services.AddRazorComponents()
 
 builder.AddPostgreSql();
 builder.AddUseCases();
+builder.Services.AddMudServices();
 
 var app = builder.Build();
 
