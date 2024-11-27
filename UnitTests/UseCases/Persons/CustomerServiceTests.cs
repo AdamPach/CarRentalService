@@ -1,9 +1,11 @@
-﻿using CarRentalService.Domain.Persons.Entities;
+﻿using CarRentalService.Domain.Persons.Criteria;
+using CarRentalService.Domain.Persons.Entities;
 using CarRentalService.Domain.Persons.ValueObjects;
 using CarRentalService.UseCases.Common;
 using CarRentalService.UseCases.Persons.Customers;
 using CarRentalService.UseCases.Persons.Customers.DTOs;
 using CarRentalService.UseCases.Persons.Customers.Mappers;
+using CarRentalService.UseCases.Persons.Customers.Repository;
 using FluentAssertions;
 using FluentResults;
 using NSubstitute;
@@ -50,13 +52,13 @@ public class CustomerServiceTests
     
     private IMapper<Customer, CustomerPreviewDto> _previewMapper;
     private IMapper<Customer, CustomerDetailDto> _detailMapper;
-    private IRepository<Customer> _repository;
+    private readonly ICustomerRepository _repository;
     
     public CustomerServiceTests()
     {
         _previewMapper = Substitute.For<IMapper<Customer, CustomerPreviewDto>>();
         _detailMapper = Substitute.For<IMapper<Customer, CustomerDetailDto>>();
-        _repository = Substitute.For<IRepository<Customer>>();
+        _repository = Substitute.For<ICustomerRepository>();
     }
     
     [Fact]
@@ -66,8 +68,8 @@ public class CustomerServiceTests
         var testCustomers = new List<Customer> { testCustomer };
 
         _previewMapper = new CustomerToPreviewDtoMapper();
-        _repository.GetAllAsync().Returns(testCustomers);
-        var sut = new CustomerService(_previewMapper, _repository, _detailMapper);
+        _repository.GetAllAsync(CustomerCriteria.Empty).Returns(Result.Ok(testCustomers.AsEnumerable()));
+        var sut = new CustomerService(_previewMapper, _detailMapper, _repository);
         
         //Act
         var result = await sut.GetAllCustomersAsync();
@@ -82,9 +84,9 @@ public class CustomerServiceTests
     public async Task Can_Raise_Error_When_Reading_All_Customers()
     {
         //Arrange
-        _repository.GetAllAsync().Returns(Result.Fail("Error"));
+        _repository.GetAllAsync(CustomerCriteria.Empty).Returns(Result.Fail("Error"));
         
-        var sut = new CustomerService(_previewMapper, _repository, _detailMapper);
+        var sut = new CustomerService(_previewMapper, _detailMapper, _repository);
         //Act
 
         var result = await sut.GetAllCustomersAsync();
@@ -101,7 +103,7 @@ public class CustomerServiceTests
 
         _detailMapper = new CustomerToDetailDtoMapper();
         
-        var sut = new CustomerService(_previewMapper, _repository, _detailMapper);
+        var sut = new CustomerService(_previewMapper, _detailMapper, _repository);
         
         //Act
         
@@ -118,14 +120,13 @@ public class CustomerServiceTests
     {
         _repository.GetByIdAsync(testCustomer.Id).Returns(Result.Fail("Not found"));
         
-        var sut = new CustomerService(_previewMapper, _repository, _detailMapper);
+        var sut = new CustomerService(_previewMapper, _detailMapper, _repository);
         
         //Act
         
         var result = await sut.GetCustomerByIdAsync(testCustomer.Id);
         
         //Assert
-        
         result.IsFailed.Should().BeTrue();
     }
 }

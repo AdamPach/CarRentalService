@@ -1,0 +1,42 @@
+﻿@page "/customers/{id:guid}"
+
+@using CarRentalService.UseCases.Persons.Customers
+@using CarRentalService.UseCases.Persons.Customers.DTOs
+
+@inject ICustomerService CustomerService
+
+<h1>Customer Detail</h1>
+
+@if (Customer != null)
+{
+    <p>Id: @Customer.Id</p>
+    <p>Full Name: @Customer.FirstName</p>
+    <p>Last Name: @Customer.LastName</p>
+    <p>License Number: @Customer.LicenseNumber</p>
+    <p>Phone Number: @Customer.PhoneNumber</p>
+    <p>Registration Date: @Customer.RegistrationDate</p>
+}
+else
+{
+    <p>Customer not found</p>
+}
+
+@code {
+    [Parameter]
+    public Guid Id { get; set; }
+    
+    private CustomerDetailDto? Customer { get; set; }
+    
+    protected override async Task OnInitializedAsync()
+    {
+        var customerResult = await CustomerService.GetCustomerByIdAsync(Id);
+        
+        if(customerResult.IsFailed)
+        {
+            return;
+        }
+        
+        Customer = customerResult.Value;
+    }
+    
+}
