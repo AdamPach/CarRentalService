@@ -8,6 +8,13 @@
 @inject ICustomerService CustomerService
 @inject NavigationManager NavigationManager
 
+<MudButton
+    Variant="Variant.Filled"
+    Color="Color.Primary"
+    OnClick="@(() => NavigationManager.NavigateTo("/customers/create"))">
+    Create Customer
+</MudButton>
+
 <MudTable
     T="@CustomerPreviewDto"
     Items="@_customerPreviewDtos"

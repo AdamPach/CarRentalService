@@ -8,4 +8,6 @@ public interface ICustomerService
     public Task<Result<IEnumerable<CustomerPreviewDto>>> GetAllCustomersAsync();
     
     public Task<Result<CustomerDetailDto>> GetCustomerByIdAsync(Guid id);
+    
+    public Task<Result<CustomerDetailDto>> CreateCustomerAsync(CreateCustomerDto customerCreateDto);
 }

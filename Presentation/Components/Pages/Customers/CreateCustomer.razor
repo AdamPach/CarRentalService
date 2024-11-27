@@ -1,0 +1,70 @@
+﻿@page "/customers/create"
+
+@rendermode InteractiveServer
+
+@using CarRentalService.UseCases.Persons.Customers
+@using CarRentalService.UseCases.Persons.Customers.DTOs
+
+@inject ICustomerService CustomerService
+@inject NavigationManager NavigationManager
+@inject ISnackbar Snackbar
+
+<h3>CreateCustomer</h3>
+
+<MudPaper>
+    <MudForm>
+        
+        <MudTextField
+            T="string"
+            Label="First Name"
+            @bind-Value="@_createCustomerDto.FirstName"/>
+        
+        <MudTextField
+            T="string"
+            Label="Last Name"
+            @bind-Value="@_createCustomerDto.LastName"/>
+        
+        <MudDatePicker
+            Label="Date of birth"
+            @bind-Date="@_createCustomerDto.DateOfBirth"/>
+        
+        <MudTextField 
+            T="string"
+            Label="Phone number"
+            @bind-Value="@_createCustomerDto.PhoneNumber"/>
+        
+        <MudTextField
+            T="string"
+            Label="License number"
+            @bind-Value="@_createCustomerDto.LicenseNumber"/>
+        
+        <MudTextField
+            T="string"
+            Label="City"
+            @bind-Value="@_createCustomerDto.City"/>
+    </MudForm>
+    
+    <MudButton
+        Variant="Variant.Filled"
+        Color="Color.Primary"
+        OnClick="@AddCustomer">
+        Add customer
+    </MudButton>
+</MudPaper>
+
+@code {
+    private readonly CreateCustomerDto _createCustomerDto = new();
+    
+    private async Task AddCustomer()
+    {
+        var result = await CustomerService.CreateCustomerAsync(_createCustomerDto);
+        
+        if (result.IsFailed)
+        {
+            Snackbar.Add(result.Errors.First().Message, Severity.Error);
+            return;
+        }
+        
+        NavigationManager.NavigateTo("/customers");
+    }
+}
