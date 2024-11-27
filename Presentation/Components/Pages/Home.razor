@@ -1,19 +1,45 @@
 ﻿@page "/"
-@using CarRentalService.UseCases.Persons.Customers
+@using CarRentalService.UseCases.Persons.Employees
 
-@inject ICustomerService CustomerService
+@inject IEmployeeService EmployeeService
+@inject ISnackbar Snackbar
 
 <PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
+<h1>Hello</h1>
+<h2>Welcome to the Car Rental Service</h2>
 
-Welcome to your new app.
+<p>For more access please log in</p>
+
+<MudForm>
+    <MudTextField 
+        Label="Username"
+        @bind-Value="@Username" />
+    <MudTextField 
+        Label="Password" 
+        @bind-Value="@Password"
+        InputType="@InputType.Password"/>
+    
+    <MudButton OnClick="LoginTask" Variant="Variant.Filled">Login</MudButton>
+</MudForm>
 
 @code{
-
-    protected override async Task OnInitializedAsync()
+    
+    private string Username { get; set; } = string.Empty;
+    
+    private string Password { get; set; } = string.Empty;
+    
+    private async Task LoginTask()
     {
-        var customers = await CustomerService.GetCustomerByIdAsync(Guid.Parse("0438ada3-736a-4701-a821-42b3bf1d26bc"));
-    }
+        var loginResult = await EmployeeService.LoginAsync(Username, Password);
 
+        if (loginResult.IsSuccess)
+        {
+            Snackbar.Add("Login successful", Severity.Success);
+        }
+        else
+        {
+            Snackbar.Add("Login failed", Severity.Error);
+        }
+    }
 }

@@ -16,3 +16,13 @@ CREATE TABLE IF NOT EXISTS "Customer" (
     "LicenseNumber" VARCHAR(50) NOT NULL,
     CONSTRAINT "FK_Customer_Person" FOREIGN KEY ("Id") REFERENCES "Person"("Id")
 );
+
+CREATE TABLE IF NOT EXISTS "Employee" (
+    "Id" UUID PRIMARY KEY NOT NULL,
+    "EmployeeNumber" VARCHAR(50) NOT NULL,
+    "HireDate" TIMESTAMP NOT NULL,
+    "TerminationDate" TIMESTAMP,
+    "Salary" DECIMAL NOT NULL,
+    "Password" VARCHAR(255),
+    "EmployeeType" INT NOT NULL 
+);
