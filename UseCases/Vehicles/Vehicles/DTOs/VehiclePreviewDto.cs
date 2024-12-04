@@ -1,4 +1,4 @@
-﻿namespace CarRentalService.UseCases.Vehicles.DTOs;
+﻿namespace CarRentalService.UseCases.Vehicles.Vehicles.DTOs;
 
 public class VehiclePreviewDto
 {

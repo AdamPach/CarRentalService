@@ -1,7 +1,7 @@
-﻿using CarRentalService.UseCases.Vehicles.DTOs;
+﻿using CarRentalService.UseCases.Vehicles.Vehicles.DTOs;
 using FluentResults;
 
-namespace CarRentalService.UseCases.Vehicles;
+namespace CarRentalService.UseCases.Vehicles.Vehicles;
 
 public interface IVehicleService
 {

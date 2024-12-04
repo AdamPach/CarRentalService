@@ -1,9 +1,9 @@
 ﻿using CarRentalService.Domain.Vehicles.Entities;
 using CarRentalService.UseCases.Common;
-using CarRentalService.UseCases.Vehicles.DTOs;
+using CarRentalService.UseCases.Vehicles.Vehicles.DTOs;
 using FluentResults;
 
-namespace CarRentalService.UseCases.Vehicles.Mappers;
+namespace CarRentalService.UseCases.Vehicles.Vehicles.Mappers;
 
 internal sealed class VehicleEntityToPreviewDtoMapper 
     : IMapper<Vehicle, VehiclePreviewDto>

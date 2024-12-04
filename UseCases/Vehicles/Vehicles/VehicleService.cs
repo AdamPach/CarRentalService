@@ -1,11 +1,11 @@
 ﻿using CarRentalService.Domain.Vehicles.Criteria;
 using CarRentalService.Domain.Vehicles.Entities;
 using CarRentalService.UseCases.Common;
-using CarRentalService.UseCases.Vehicles.DTOs;
-using CarRentalService.UseCases.Vehicles.Repository;
+using CarRentalService.UseCases.Vehicles.Vehicles.DTOs;
+using CarRentalService.UseCases.Vehicles.Vehicles.Repository;
 using FluentResults;
 
-namespace CarRentalService.UseCases.Vehicles;
+namespace CarRentalService.UseCases.Vehicles.Vehicles;
 
 internal sealed class VehicleService : IVehicleService
 {

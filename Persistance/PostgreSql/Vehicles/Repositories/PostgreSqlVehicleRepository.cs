@@ -3,7 +3,7 @@ using CarRentalService.Domain.Vehicles.Entities;
 using CarRentalService.Domain.Vehicles.ValueObjects;
 using CarRentalService.Persistence.PostgreSql.Common;
 using CarRentalService.Persistence.PostgreSql.Database;
-using CarRentalService.UseCases.Vehicles.Repository;
+using CarRentalService.UseCases.Vehicles.Vehicles.Repository;
 using Dapper;
 using FluentResults;
 
@@ -51,10 +51,5 @@ public class PostgreSqlVehicleRepository : IVehicleRepository
             }, splitOn:"Name");
         
         return Result.Ok(vehicles);
-    }
-
-    public Task<Result<Vehicle>> GetByIdAsync(Guid id)
-    {
-        throw new NotImplementedException();
     }
 }

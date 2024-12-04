@@ -5,7 +5,9 @@ using FluentResults;
 
 namespace CarRentalService.UseCases.Persons.Customers.Repository;
 
-public interface ICustomerRepository : IReadRepository<Customer, CustomerCriteria>
+public interface ICustomerRepository
 {
+    Task<Result<IEnumerable<Customer>>> GetAllAsync(CustomerCriteria criteria);
+    Task<Result<Customer>> GetByIdAsync(Guid id);
     Task<Result<Customer>> CreateAsync(Customer customer);
 }

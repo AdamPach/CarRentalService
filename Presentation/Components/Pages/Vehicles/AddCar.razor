@@ -1,0 +1,84 @@
+﻿@using CarRentalService.Domain.Vehicles.Enums
+@using CarRentalService.UseCases.Vehicles.Cars
+@using CarRentalService.UseCases.Vehicles.Cars.DTOs
+
+@rendermode InteractiveServer
+
+@inject ICarService CarService
+@inject ISnackbar Snackbar
+@inject NavigationManager NavigationManager
+
+<EditForm Model="@_car" OnSubmit="@CreateCar">
+    <MudCard>
+        <MudCardContent>
+            <MudTextField 
+                Label="Brand" 
+                @bind-Value="@_car.Brand" />
+            
+            <MudTextField 
+                Label="Model" 
+                @bind-Value="@_car.Model" />
+            
+            <MudDatePicker 
+                Label="Date of production" 
+                @bind-Date="@_car.ProductionDate"/>
+            
+            <MudTextField 
+                Label="License plate" 
+                @bind-Value="_car.LicensePlate" />
+            
+            <MudTextField 
+                Label="Color"
+                @bind-Value="_car.Color" />
+            
+            <MudNumericField 
+                Label="Seats" 
+                @bind-Value="_car.Seats" />
+            
+            <MudSelect
+                Label="Engine Type"
+                @bind-Value="_car.EngineType">
+                
+                <MudSelectItem Value="@EngineType.Gasoline">Gasoline</MudSelectItem>
+                <MudSelectItem Value="@EngineType.Diesel">Diesel</MudSelectItem>
+                <MudSelectItem Value="@EngineType.Electric">Electric</MudSelectItem>
+                <MudSelectItem Value="@EngineType.Hybrid">Hybrid</MudSelectItem>
+
+            </MudSelect>
+            
+            <MudNumericField 
+                Label="Price per day" 
+                @bind-Value="_car.PricePerDay" />
+            
+            <MudNumericField 
+                Label="Trunk Capacity" 
+                @bind-Value="_car.TrunkCapacity" />
+            
+            <MudNumericField 
+                Label="Number of doors" 
+                @bind-Value="_car.Doors" />
+            
+        </MudCardContent>
+        <MudCardActions>
+            <MudButton Variant="Variant.Filled" ButtonType="ButtonType.Submit" Color="Color.Primary">Save</MudButton>
+        </MudCardActions>
+    </MudCard>
+</EditForm>
+
+@code {
+    private readonly CreateCarDto _car = new();
+
+    private async Task CreateCar()
+    {
+        var result = await CarService.CreateCarAsync(_car);
+        
+        if (result.IsFailed)
+        {
+            Snackbar.Add("Failed to create car", Severity.Error);
+            return;
+        }
+        
+        Snackbar.Add("Car created", Severity.Success);
+        NavigationManager.NavigateTo("/vehicles");
+    }
+}
