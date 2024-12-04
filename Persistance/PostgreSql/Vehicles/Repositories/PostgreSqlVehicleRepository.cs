@@ -1,5 +1,6 @@
 ﻿using CarRentalService.Domain.Vehicles.Criteria;
 using CarRentalService.Domain.Vehicles.Entities;
+using CarRentalService.Domain.Vehicles.ValueObjects;
 using CarRentalService.Persistence.PostgreSql.Common;
 using CarRentalService.Persistence.PostgreSql.Database;
 using CarRentalService.UseCases.Vehicles.Repository;
@@ -21,7 +22,9 @@ public class PostgreSqlVehicleRepository : IVehicleRepository
         _criteriaToSqlMapper = criteriaToSqlMapper;
     }
 
-    private const string QueryTemplate = @"SELECT * FROM ""Vehicle"" /**innerjoin**//**where**/";
+    private const string QueryTemplate = 
+        @"SELECT ""Id"", ""DateOfManufacture"", ""Model"", ""LicensePlate"", ""Color"", ""Seats"", ""EngineType"", ""PricePerDay"", ""VehicleType"", ""BrandName"" AS ""Name""
+        FROM ""Vehicle"" /**innerjoin**//**where**/";
 
     public async Task<Result<IEnumerable<Vehicle>>> GetAllAsync(VehicleCriteria criteria)
     {
@@ -39,7 +42,13 @@ public class PostgreSqlVehicleRepository : IVehicleRepository
         await using var connection = 
             await _connectionFactory.CreateConnection();
 
-        var vehicles = await connection.QueryAsync<Vehicle>(query.RawSql, param: query.Parameters);
+        var vehicles = await connection
+            .QueryAsync<Vehicle, Manufacturer, Vehicle>(query.RawSql, param: query.Parameters, 
+                map: (vehicle, manufacturer) =>
+            {
+                vehicle.Manufacturer = manufacturer;
+                return vehicle;
+            }, splitOn:"Name");
         
         return Result.Ok(vehicles);
     }

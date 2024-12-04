@@ -1,13 +1,14 @@
 ﻿using CarRentalService.Domain.Common.Interfaces;
 using CarRentalService.Domain.Rentals.Entities;
 using CarRentalService.Domain.Vehicles.Enums;
+using CarRentalService.Domain.Vehicles.ValueObjects;
 
 namespace CarRentalService.Domain.Vehicles.Entities;
 
 public class Vehicle : IEntity
 {
     public Guid Id { get; set; } = Guid.Empty;
-    public required string BrandName { get; set; } 
+    public required Manufacturer Manufacturer { get; set; } 
     
     public required DateTime DateOfManufacture { get; set; }
     

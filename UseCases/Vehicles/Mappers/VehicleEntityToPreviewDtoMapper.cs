@@ -12,7 +12,7 @@ internal sealed class VehicleEntityToPreviewDtoMapper
     {
         var vehiclePreview = new VehiclePreviewDto
         {
-            Brand = from.BrandName,
+            Brand = from.Manufacturer.Name,
             Model = from.Model,
             VehicleType = from.VehicleType.ToString(),
             PricePerDay = from.PricePerDay,
