@@ -4,6 +4,8 @@ using CarRentalService.UseCases.Persons.Customers;
 using CarRentalService.UseCases.Persons.Customers.DTOs;
 using CarRentalService.UseCases.Persons.Customers.Mappers;
 using CarRentalService.UseCases.Persons.Employees;
+using CarRentalService.UseCases.Persons.Employees.DTOs;
+using CarRentalService.UseCases.Persons.Employees.Mappers;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -21,6 +23,7 @@ public static class DependencyInjection
         hostBuilder.Services.AddScoped<IMapper<Customer, CustomerPreviewDto>, CustomerToPreviewDtoMapper>();
         hostBuilder.Services.AddScoped<ICustomerService, CustomerService>();
 
+        hostBuilder.Services.AddScoped<IMapper<Employee, AuthenticatedEmployeeDto>, AuthenticatedEmployeeDtoMapper>();
         hostBuilder.Services.AddScoped<IEmployeeService, EmployeeService>();
     }
 }

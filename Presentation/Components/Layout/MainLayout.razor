@@ -1,9 +1,9 @@
 ﻿@inherits LayoutComponentBase
 
-<MudThemeProvider />
-<MudPopoverProvider />
-<MudDialogProvider />
-<MudSnackbarProvider />
+<MudThemeProvider @rendermode="InteractiveServer" />
+<MudPopoverProvider @rendermode="InteractiveServer"/>
+<MudDialogProvider @rendermode="InteractiveServer"/>
+<MudSnackbarProvider @rendermode="InteractiveServer"/>
 
 <div class="page">
     <div class="sidebar">
@@ -14,7 +14,6 @@
         <div class="top-row px-4">
             <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
         </div>
-
         <article class="content px-4">
             @Body
         </article>

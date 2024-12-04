@@ -1,0 +1,65 @@
+﻿@page "/login"
+
+@using System.Security.Claims
+@using CarRentalService.UseCases.Persons.Employees
+@using Microsoft.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Authentication.Cookies
+
+@inject IEmployeeService EmployeeService
+@inject ISnackbar Snackbar
+@inject NavigationManager NavigationManager
+
+<div class="row">
+    <div class="col-lg-4 offset-lg-4 pt-4 pb-4 border">
+        <EditForm Model="@Model" OnSubmit="AuthenticateAsync" FormName="LoginForm">
+            <div class="mb-3">
+                <label>Employee number</label>
+                <InputText @bind-Value="@Model.EmployeeNumber" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label>Password</label>
+                <InputText @bind-Value="@Model.Password" type="password" class="form-control" />
+            </div>
+            <button type="submit" class="btn btn-primary">Login</button>
+        </EditForm>
+    </div>
+</div>
+
+@code {
+    [CascadingParameter]
+    public HttpContext? Context { get; set; }
+    
+    [SupplyParameterFromForm]
+    private ViewModels.LoginEmployee Model { get; set; } = new();
+
+    private async Task AuthenticateAsync()
+    {
+        if (Context!.User.Identity?.IsAuthenticated == true)
+        {
+            Snackbar.Add("You are already authenticated", Severity.Error);
+            return;
+        }
+        
+        var result = await EmployeeService.LoginAsync(Model.EmployeeNumber, Model.Password);
+        
+        if (result.IsFailed)
+        {
+            Snackbar.Add(result.Errors.First().Message, Severity.Error);
+            return;
+        }
+        
+        List<Claim> claims =
+        [
+            new Claim(ClaimTypes.Name, result.Value.Username),
+            new Claim(ClaimTypes.Role, result.Value.Role.ToString())
+        ];
+
+        var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+        var principal = new ClaimsPrincipal(identity);
+
+        await Context.SignInAsync(principal);
+        
+        NavigationManager.NavigateTo("/");
+    }
+}

@@ -1,9 +1,9 @@
-﻿using CarRentalService.Domain.Persons.Entities;
+﻿using CarRentalService.UseCases.Persons.Employees.DTOs;
 using FluentResults;
 
 namespace CarRentalService.UseCases.Persons.Employees;
 
 public interface IEmployeeService
 {
-    Task<Result> LoginAsync(string employeeNumber, string password);
+    Task<Result<AuthenticatedEmployeeDto>> LoginAsync(string employeeNumber, string password);
 }
