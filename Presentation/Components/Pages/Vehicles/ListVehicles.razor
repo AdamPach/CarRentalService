@@ -1,0 +1,75 @@
+﻿@page "/vehicles"
+
+@rendermode InteractiveServer
+
+@using CarRentalService.UseCases.Vehicles
+@using CarRentalService.UseCases.Vehicles.DTOs
+@using Microsoft.AspNetCore.Authorization
+
+@attribute [Authorize]
+
+@inject IVehicleService VehicleService
+@inject ISnackbar Snackbar
+@inject NavigationManager NavigationManager
+
+<PageTitle>Vehicles</PageTitle>
+
+<AuthorizeView Roles="Manager">
+    <Authorized>
+        <MudButton
+            Variant="@Variant.Filled"
+            OnClick="@AddVehicle">
+            Create Vehicle
+        </MudButton>
+    </Authorized>
+</AuthorizeView>
+
+<MudTable
+    T="@VehiclePreviewDto"
+    Items="@_vehicles"
+    Hover="@true"
+    RowClass="cursor-pointer">
+    
+    <HeaderContent>
+        <MudTh>Brand</MudTh>
+        <MudTd>Model</MudTd>
+        <MudTd>Seats</MudTd>
+        <MudTd>Engine Type</MudTd>
+        <MudTd>Vehicle Type</MudTd>
+        <MudTd>Price Per Day</MudTd>
+    </HeaderContent>
+    
+    <RowTemplate>
+        <MudTd DataLabel="Brand">@context.Brand</MudTd>
+        <MudTd DataLabel="Model">@context.Model</MudTd>
+        <MudTd DataLabel="Seats">@context.Seats</MudTd>
+        <MudTd DataLabel="Engine Type">@context.EngineType</MudTd>
+        <MudTd DataLabel="Vehicle Type">@context.VehicleType</MudTd>
+        <MudTd DataLabel="Price Per Day">@context.PricePerDay</MudTd>
+    </RowTemplate>
+    
+</MudTable>
+
+@code {
+    private IList<VehiclePreviewDto> _vehicles = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await VehicleService.GetAllVehiclesPreviewsAsync();
+        
+        if (result.IsFailed)
+        {
+            Snackbar.Add("Cannot read a Vehicles!", Severity.Error);
+            return;
+        }
+        
+        _vehicles = result.Value.ToList();
+        
+        await base.OnInitializedAsync();
+    }
+    
+    private void AddVehicle()
+    {
+        NavigationManager.NavigateTo("/vehicles/add");
+    }
+}

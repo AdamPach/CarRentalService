@@ -2,7 +2,7 @@
 
 public enum EngineType
 {
-    Gasoline,
+    Gasoline = 0,
     Diesel,
     Electric,
     Hybrid

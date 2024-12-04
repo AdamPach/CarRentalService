@@ -26,3 +26,31 @@ CREATE TABLE IF NOT EXISTS "Employee" (
     "Password" VARCHAR(255),
     "EmployeeType" INT NOT NULL 
 );
+
+CREATE TABLE IF NOT EXISTS "Vehicle" (
+    "Id" UUID PRIMARY KEY NOT NULL,
+    "BrandName" VARCHAR(50) NOT NULL,
+    "DateOfManufacture" TIMESTAMP NOT NULL,
+    "LicensePlate" VARCHAR(50) NOT NULL,
+    "Color" VARCHAR(50),
+    "PricePerDay" DECIMAL NOT NULL,
+    "EngineType" INT NOT NULL,
+    "Seats" INT NOT NULL,
+    "Model" VARCHAR(50) NOT NULL,
+    "VehicleType" INT NOT NULL,
+    "EngineDisplacement" INT,
+    "HelmetStorage" BOOLEAN,
+    "TrunkSize" INT,
+    "Doors" INT,
+    CONSTRAINT "CK_Is_Car" CHECK (
+        ("VehicleType" = 0 AND 
+        "EngineDisplacement" IS NULL AND
+        "HelmetStorage" IS NULL AND
+        "TrunkSize" IS NOT NULL AND
+        "Doors" IS NOT NULL) OR 
+        ("VehicleType" = 1 AND
+         "EngineDisplacement" IS NOT NULL AND
+         "HelmetStorage" IS NOT NULL AND
+         "TrunkSize" IS NULL AND
+         "Doors" IS NULL))
+);

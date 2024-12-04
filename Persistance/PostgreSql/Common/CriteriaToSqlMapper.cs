@@ -5,7 +5,7 @@ using FluentResults;
 
 namespace CarRentalService.Persistence.PostgreSql.Common;
 
-internal abstract class CriteriaToSqlMapper<TCriteria> : IMapper<TCriteria, SqlBuilder>
+public abstract class CriteriaToSqlMapper<TCriteria> : IMapper<TCriteria, SqlBuilder>
     where TCriteria : CriteriaBase
 {
     public virtual Result<SqlBuilder> Map(TCriteria from)

@@ -1,7 +1,10 @@
 ﻿@page "/customers"
 
+@attribute [Authorize]
+
 @using CarRentalService.UseCases.Persons.Customers
 @using CarRentalService.UseCases.Persons.Customers.DTOs
+@using Microsoft.AspNetCore.Authorization
 
 @rendermode InteractiveServer
 

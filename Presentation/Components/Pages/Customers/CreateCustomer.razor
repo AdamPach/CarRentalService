@@ -1,9 +1,12 @@
 ﻿@page "/customers/create"
 
+@attribute [Authorize]
+
 @rendermode InteractiveServer
 
 @using CarRentalService.UseCases.Persons.Customers
 @using CarRentalService.UseCases.Persons.Customers.DTOs
+@using Microsoft.AspNetCore.Authorization
 
 @inject ICustomerService CustomerService
 @inject NavigationManager NavigationManager
