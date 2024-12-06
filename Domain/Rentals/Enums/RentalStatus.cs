@@ -2,6 +2,6 @@
 
 public enum RentalStatus
 {
-    Active,
+    Active = 0,
     Closed
 }

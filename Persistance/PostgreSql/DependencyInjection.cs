@@ -4,10 +4,12 @@ using CarRentalService.Persistence.PostgreSql.Common;
 using CarRentalService.Persistence.PostgreSql.Database;
 using CarRentalService.Persistence.PostgreSql.Persons.Mappers;
 using CarRentalService.Persistence.PostgreSql.Persons.Repositories;
+using CarRentalService.Persistence.PostgreSql.Rentals.Repositories;
 using CarRentalService.Persistence.PostgreSql.Vehicles.Mappers;
 using CarRentalService.Persistence.PostgreSql.Vehicles.Repositories;
 using CarRentalService.UseCases.Persons.Customers.Repository;
 using CarRentalService.UseCases.Persons.Employees.Repository;
+using CarRentalService.UseCases.Rentals.Repositories;
 using CarRentalService.UseCases.Vehicles.Cars.Repositories;
 using CarRentalService.UseCases.Vehicles.Vehicles.Repository;
 using Microsoft.Extensions.DependencyInjection;
@@ -31,5 +33,7 @@ public static class DependencyInjection
         hostBuilder.Services.AddScoped<CriteriaToSqlMapper<VehicleCriteria>, VehicleCriteriaToSqlMapper>();
 
         hostBuilder.Services.AddScoped<ICarRepository, PostgreSqlCarRepository>();
+
+        hostBuilder.Services.AddScoped<IRentalRepository, PostgreSqlRentalRepository>();
     }
 }

@@ -7,6 +7,7 @@ using CarRentalService.UseCases.Persons.Customers.Mappers;
 using CarRentalService.UseCases.Persons.Employees;
 using CarRentalService.UseCases.Persons.Employees.DTOs;
 using CarRentalService.UseCases.Persons.Employees.Mappers;
+using CarRentalService.UseCases.Rentals;
 using CarRentalService.UseCases.Vehicles;
 using CarRentalService.UseCases.Vehicles.Cars;
 using CarRentalService.UseCases.Vehicles.Cars.DTOs;
@@ -39,5 +40,7 @@ public static class DependencyInjection
         
         hostBuilder.Services.AddScoped<IMapper<CreateCarDto, Car>, CreateCarToEntityMapper>();
         hostBuilder.Services.AddScoped<ICarService, CarService>();
+        
+        hostBuilder.Services.AddScoped<IRentalService, RentalService>();
     }
 }

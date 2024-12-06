@@ -54,3 +54,23 @@ CREATE TABLE IF NOT EXISTS "Vehicle" (
          "TrunkSize" IS NULL AND
          "Doors" IS NULL))
 );
+
+CREATE TABLE IF NOT EXISTS "Rentals" (
+    "Id" UUID PRIMARY KEY NOT NULL,
+    "StartDate" TIMESTAMP NOT NULL,
+    "EndDate" TIMESTAMP NOT NULL,
+    "ReturnDate" TIMESTAMP,
+    "TotalPrice" DECIMAL NOT NULL,
+    "Status" INT NOT NULL,
+    "VehicleId" UUID NOT NULL,
+    "CustomerId" UUID NOT NULL,
+    "EmployeeId" UUID NOT NULL,
+    CONSTRAINT "FK_Rentals_Vehicle" FOREIGN KEY ("VehicleId") REFERENCES "Vehicle"("Id"),
+    CONSTRAINT "FK_Rentals_Customer" FOREIGN KEY ("CustomerId") REFERENCES "Customer"("Id"),
+    CONSTRAINT "FK_Rentals_Employee" FOREIGN KEY ("EmployeeId") REFERENCES "Employee"("Id"),
+    CONSTRAINT "CK_Status" CHECK(
+        ("Status" = 0 AND
+         "ReturnDate" IS NULL) OR
+        ("Status" = 1 AND
+         "ReturnDate" IS NOT NULL))
+);
