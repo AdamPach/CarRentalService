@@ -1,4 +1,5 @@
 ﻿using CarRentalService.Domain.Persons.Entities;
+using CarRentalService.Domain.Rentals.Entities;
 using CarRentalService.Domain.Vehicles.Entities;
 using CarRentalService.UseCases.Common;
 using CarRentalService.UseCases.Persons.Customers;
@@ -8,7 +9,8 @@ using CarRentalService.UseCases.Persons.Employees;
 using CarRentalService.UseCases.Persons.Employees.DTOs;
 using CarRentalService.UseCases.Persons.Employees.Mappers;
 using CarRentalService.UseCases.Rentals;
-using CarRentalService.UseCases.Vehicles;
+using CarRentalService.UseCases.Rentals.DTOs;
+using CarRentalService.UseCases.Rentals.Mappers;
 using CarRentalService.UseCases.Vehicles.Cars;
 using CarRentalService.UseCases.Vehicles.Cars.DTOs;
 using CarRentalService.UseCases.Vehicles.Cars.Mappers;
@@ -42,5 +44,6 @@ public static class DependencyInjection
         hostBuilder.Services.AddScoped<ICarService, CarService>();
         
         hostBuilder.Services.AddScoped<IRentalService, RentalService>();
+        hostBuilder.Services.AddScoped<IMapper<Rental, RentalPreviewDto>, RentalToPreviewDtoMapper>();
     }
 }

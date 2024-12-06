@@ -27,4 +27,6 @@ public class Vehicle : IEntity
     public required VehicleType VehicleType { get; set; }
     
     public ICollection<Rental>? Rentals { get; set; }
+    
+    public string Name => $"{Manufacturer.Name} {Model}";
 }

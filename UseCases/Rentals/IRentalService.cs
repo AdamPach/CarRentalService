@@ -1,9 +1,9 @@
-﻿using CarRentalService.Domain.Rentals.Entities;
+﻿using CarRentalService.UseCases.Rentals.DTOs;
 using FluentResults;
 
 namespace CarRentalService.UseCases.Rentals;
 
 public interface IRentalService
 {
-    Task<Result<IEnumerable<Rental>>> GetActiveRentalsAsync();
+    Task<Result<IEnumerable<RentalPreviewDto>>> GetActiveRentalsAsync();
 }
