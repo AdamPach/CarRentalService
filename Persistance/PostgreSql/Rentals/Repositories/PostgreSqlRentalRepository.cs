@@ -3,6 +3,7 @@ using CarRentalService.Domain.Rentals.Criteria;
 using CarRentalService.Domain.Rentals.Entities;
 using CarRentalService.Domain.Rentals.ValueObjects;
 using CarRentalService.Domain.Vehicles.Entities;
+using CarRentalService.Domain.Vehicles.ValueObjects;
 using CarRentalService.Persistence.PostgreSql.Common;
 using CarRentalService.Persistence.PostgreSql.Database;
 using CarRentalService.Persistence.PostgreSql.Rentals.Mappers;
@@ -28,7 +29,7 @@ public class PostgreSqlRentalRepository : IRentalRepository
     private const string QueryTemplateWithCustomerAndVehicle = 
         @"SELECT ""Rentals"".""Id"", ""Status"", ""TotalPrice"", ""CustomerId"", ""VehicleId"",
           ""StartDate"", ""EndDate"", ""ReturnDate"",
-            ""Person"".*, ""Vehicle"".*
+            ""Person"".*, ""Vehicle"".*, ""Vehicle"".""BrandName"" AS ""Name""
           FROM ""Rentals""
           INNER JOIN ""Customer"" ON ""Customer"".""Id"" = ""Rentals"".""CustomerId""
           INNER JOIN ""Person"" ON ""Person"".""Id"" = ""Customer"".""Id""
@@ -50,14 +51,17 @@ public class PostgreSqlRentalRepository : IRentalRepository
         await using var connection = await _connectionFactory.CreateConnection();
 
         var rentals = await connection
-            .QueryAsync<Rental, RentalDateRange, Customer, Vehicle, Rental>(query.RawSql, param: query.Parameters,
-                map: (rental, range, customer, vehicle) =>
+            .QueryAsync<Rental, RentalDateRange, Customer, Vehicle, Manufacturer,Rental>(
+                query.RawSql, 
+                param: query.Parameters,
+                map: (rental, range, customer, vehicle, manufacturer) =>
                 {
+                    vehicle.Manufacturer = manufacturer;
                     rental.RentalDateRange = range;
                     rental.Customer = customer;
                     rental.Vehicle = vehicle;
                     return rental;
-                }, splitOn: "Id,StartDate,Id,Id");
+                }, splitOn: "Id,StartDate,Id,Id,Name");
         
         return Result.Ok(rentals);
     }

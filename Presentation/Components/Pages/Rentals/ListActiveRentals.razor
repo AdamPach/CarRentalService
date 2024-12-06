@@ -1,9 +1,55 @@
 ﻿@page "/rentals"
 
+@using CarRentalService.UseCases.Rentals
+@using CarRentalService.UseCases.Rentals.DTOs
+
+@inject IRentalService RentalService
+@inject ISnackbar Snackbar
+
 <PageTitle>Active Rentals</PageTitle>
 
+<MudTable
+    T="@RentalPreviewDto"
+    Items="@_rentalPreviewDtos"
+    Hover="@true"
+    RowClass="cursor-pointer">
+    
+    <HeaderContent>
+        <MudTh>Status</MudTh>
+        <MudTh>Customer</MudTh>
+        <MudTh>Car</MudTh>
+        <MudTh>Start Date</MudTh>
+        <MudTh>End Date</MudTh>
+        <MudTh>Return Date</MudTh>
+    </HeaderContent>
+    
+    <RowTemplate>
+        <MudTd>@context.Status.ToString()</MudTd>
+        <MudTd>@context.CustomerName</MudTd>
+        <MudTd>@context.VehicleName</MudTd>
+        <MudTd>@context.RentalDateRange.StartDate</MudTd>
+        <MudTd>@context.RentalDateRange.EndDate</MudTd>
+        <MudTd>@context.RentalDateRange.ReturnDate</MudTd>
+    </RowTemplate>
 
+</MudTable>
 
 @code {
-    
+    private readonly List<RentalPreviewDto> _rentalPreviewDtos = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await RentalService.GetActiveRentalsAsync();
+        
+        if (result.IsFailed)
+        {
+            Snackbar.Add("Failed to load rentals", Severity.Error);
+            return;
+        }
+        
+        _rentalPreviewDtos.AddRange(result.Value);
+        
+        await base.OnInitializedAsync();
+    }
+
 }
