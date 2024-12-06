@@ -28,7 +28,8 @@ public class RentalService : IRentalService
             Status = RentalStatus.Active,
         };
 
-        var rentals = await _rentalRepository.GetAllWithCustomerAndVehicleAsync(criteria);
+        var rentals = await _rentalRepository
+            .GetAllWithCustomerAndVehicleAsync(criteria);
         
         if (rentals.IsFailed)
         {
