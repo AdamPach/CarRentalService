@@ -5,5 +5,5 @@ namespace CarRentalService.UseCases.Vehicles.Vehicles;
 
 public interface IVehicleService
 {
-    Task<Result<IEnumerable<VehiclePreviewDto>>> GetAllVehiclesPreviewsAsync();
+    Task<Result<IEnumerable<VehiclePreviewDto>>> GetVehiclesPreviewsAsync(VehiclesQueryDto queryDto);
 }

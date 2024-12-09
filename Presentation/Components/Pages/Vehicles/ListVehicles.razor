@@ -2,7 +2,6 @@
 
 @rendermode InteractiveServer
 
-@using CarRentalService.UseCases.Vehicles
 @using CarRentalService.UseCases.Vehicles.Vehicles
 @using CarRentalService.UseCases.Vehicles.Vehicles.DTOs
 @using Microsoft.AspNetCore.Authorization
@@ -24,6 +23,24 @@
         </MudButton>
     </Authorized>
 </AuthorizeView>
+
+<MudButton
+    Variant="@Variant.Filled"
+    OnClick="@SearchVehicles">
+    Search Vehicles
+</MudButton>
+
+<MudSwitch
+    @bind-Value="@Query.IsAvailable"
+    Color="Color.Primary">
+    Is Car Available
+</MudSwitch>
+
+<MudTextField
+    Label="Brand"
+    @bind-Value="@Query.Brand"
+    Variant="Variant.Text"
+    Margin="Margin.Normal" />
 
 <MudTable
     T="@VehiclePreviewDto"
@@ -53,10 +70,19 @@
 
 @code {
     private IList<VehiclePreviewDto> _vehicles = [];
+    
+    private VehiclesQueryDto Query { get; set; } = new();
 
     protected override async Task OnInitializedAsync()
     {
-        var result = await VehicleService.GetAllVehiclesPreviewsAsync();
+        await LoadVehicles();
+        
+        await base.OnInitializedAsync();
+    }
+
+    private async Task LoadVehicles()
+    {
+        var result = await VehicleService.GetVehiclesPreviewsAsync(Query);
         
         if (result.IsFailed)
         {
@@ -65,12 +91,12 @@
         }
         
         _vehicles = result.Value.ToList();
-        
-        await base.OnInitializedAsync();
     }
     
     private void AddVehicle()
     {
         NavigationManager.NavigateTo("/vehicles/add");
     }
+
+    private Task SearchVehicles() => LoadVehicles();
 }

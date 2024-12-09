@@ -9,10 +9,12 @@ namespace CarRentalService.Persistence.PostgreSql.Vehicles.Mappers;
 public class VehicleCriteriaToSqlMapper : CriteriaToSqlMapper<VehicleCriteria>
 {
     private const string ExcludeRented =
-        @"NOT EXISTS(
-          SELECT 1 FROM ""Rentals"" R
-          WHERE R.""VehicleId"" = ""Vehicle"".""Id""
-            AND R.""Status"" = @Status)";
+        """
+        NOT EXISTS(
+                  SELECT 1 FROM "Rentals" R
+                  WHERE R."VehicleId" = "Vehicle"."Id"
+                    AND R."Status" = @Status)
+        """;
     
     public override Result<SqlBuilder> Map(VehicleCriteria from)
     {
@@ -27,8 +29,12 @@ public class VehicleCriteriaToSqlMapper : CriteriaToSqlMapper<VehicleCriteria>
 
         if (from.ExcludeRented)
         {
-            sqlBuilder.Where(ExcludeRented, 
-                new { Status = RentalStatus.Active });
+            sqlBuilder.Where(ExcludeRented, new { Status = RentalStatus.Active });
+        }
+
+        if (!string.IsNullOrWhiteSpace(from.Brand))
+        {
+            sqlBuilder.Where(@"LOWER(""Vehicle"".""BrandName"") = LOWER(@Brand)", new { from.Brand });
         }
 
         return sqlBuilder;

@@ -21,11 +21,9 @@ internal sealed class VehicleService : IVehicleService
         _previewMapper = previewMapper;
     }
 
-    public async Task<Result<IEnumerable<VehiclePreviewDto>>> GetAllVehiclesPreviewsAsync()
+    public async Task<Result<IEnumerable<VehiclePreviewDto>>> GetVehiclesPreviewsAsync(VehiclesQueryDto queryDto)
     {
-        var criteria = new VehicleCriteria();
-        
-        var vehicles = await _vehicleRepository.GetAllAsync(criteria);
+        var vehicles = await _vehicleRepository.GetAllAsync(queryDto);
         
         if (vehicles.IsFailed)
         {
