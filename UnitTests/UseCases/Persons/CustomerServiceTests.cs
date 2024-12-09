@@ -10,47 +10,12 @@ using FluentAssertions;
 using FluentResults;
 using FluentValidation;
 using NSubstitute;
+using UnitTests.Fakers.Persons.Customers;
 
 namespace UnitTests.UseCases.Persons;
 
 public class CustomerServiceTests
 {
-    private static Customer testCustomer = new Customer
-    {
-        Id = Guid.NewGuid(),
-        FirstName = "John",
-        LastName = "Doe",
-        LicenseNumber = "123456",
-        PhoneNumber = "123456",
-        RegistrationDate = DateTime.Now,
-        Address = new Address("Street", "City", "State"),
-        DateOfBirth = DateTime.Now
-    };
-    
-    private static CustomerPreviewDto testShowCustomerDto = new CustomerPreviewDto
-    {
-        Id = testCustomer.Id,
-        FullName = testCustomer.FullName,
-        LicenseNumber = testCustomer.LicenseNumber,
-        PhoneNumber = testCustomer.PhoneNumber,
-        RegistrationDate = testCustomer.RegistrationDate,
-    };
-
-    private static CustomerDetailDto testCustomerDetailDto = new CustomerDetailDto()
-    {
-        Id = testCustomer.Id,
-        FirstName = testCustomer.FirstName,
-        LastName = testCustomer.LastName,
-        DateOfBirth = testCustomer.DateOfBirth,
-        Email = testCustomer.Email,
-        PhoneNumber = testCustomer.PhoneNumber,
-        City = testCustomer.Address?.City,
-        Street = testCustomer.Address?.Street,
-        ZipCode = testCustomer.Address?.ZipCode,
-        LicenseNumber = testCustomer.LicenseNumber,
-        RegistrationDate = testCustomer.RegistrationDate
-    };
-    
     private IMapper<Customer, CustomerPreviewDto> _previewMapper;
     private IMapper<Customer, CustomerDetailDto> _detailMapper;
     private IMapper<CreateCustomerDto, Customer> _createMapper;
@@ -74,26 +39,32 @@ public class CustomerServiceTests
     public async Task Can_Read_All_Customers()
     {
         //Arrange
-        var testCustomers = new List<Customer> { testCustomer };
+        var testCustomers = CustomerData
+            .ValidCustomerFaker
+            .Generate(20);
 
         _previewMapper = new CustomerToPreviewDtoMapper();
-        _repository.GetAllAsync(CustomerCriteria.Empty).Returns(Result.Ok(testCustomers.AsEnumerable()));
+        _repository.GetAllAsync(CustomerCriteria.Empty).Returns(testCustomers);
         var sut = new CustomerService(_previewMapper, _detailMapper, _repository, _createMapper, _createValidator);
         
         //Act
         var result = await sut.GetAllCustomersAsync();
 
         //Assert
-
-        result.IsSuccess.Should().BeTrue();
-        result.Value.Single().Should().BeEquivalentTo(testShowCustomerDto);
+        result.IsSuccess
+            .Should()
+            .BeTrue();
+        result.Value
+            .Should()
+            .BeEquivalentTo(CustomerData.CustomersPreview(testCustomers));
     }
     
     [Fact]
     public async Task Can_Raise_Error_When_Reading_All_Customers()
     {
         //Arrange
-        _repository.GetAllAsync(CustomerCriteria.Empty).Returns(Result.Fail("Error"));
+        _repository.GetAllAsync(CustomerCriteria.Empty)
+            .Returns(Result.Fail("Error"));
         
         var sut = new CustomerService(_previewMapper, _detailMapper, _repository, _createMapper, _createValidator);
         //Act
@@ -108,7 +79,9 @@ public class CustomerServiceTests
     public async Task Can_Read_Customer_By_Id()
     {
         //Arrange
-        _repository.GetByIdAsync(testCustomer.Id).Returns(testCustomer);
+        var testCustomer = CustomerData.ValidCustomerFaker.Generate();
+        
+         _repository.GetByIdAsync(testCustomer.Id).Returns(testCustomer);
 
         _detailMapper = new CustomerToDetailDtoMapper();
         
@@ -121,12 +94,14 @@ public class CustomerServiceTests
         //Assert
 
         result.IsSuccess.Should().BeTrue();
-        result.Value.Should().BeEquivalentTo(testCustomerDetailDto);
+        result.Value.Should().BeEquivalentTo(CustomerData.CustomersDetail(testCustomer).First());
     }
 
     [Fact]
     public async Task Can_Raise_Error_When_Not_Found()
     {
+        //Arrange
+        var testCustomer = CustomerData.ValidCustomerFaker.Generate();
         _repository.GetByIdAsync(testCustomer.Id).Returns(Result.Fail("Not found"));
         
         var sut = new CustomerService(_previewMapper, _detailMapper, _repository, _createMapper, _createValidator);
