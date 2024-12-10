@@ -7,4 +7,5 @@ namespace CarRentalService.UseCases.Rentals.Repositories;
 public interface IRentalRepository
 {
     Task<Result<IEnumerable<Rental>>> GetAllWithCustomerAndVehicleAsync(RentalCriteria criteria);
+    Task<Result<Rental>> CreateRentalAsync(Rental rental);
 }

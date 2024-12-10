@@ -1,0 +1,149 @@
+﻿@page "/rentals/create/{VehicleId:guid?}"
+
+@using System.Security.Claims
+@using CarRentalService.UseCases.Persons.Customers
+@using CarRentalService.UseCases.Persons.Customers.DTOs
+@using CarRentalService.UseCases.Rentals
+@using CarRentalService.UseCases.Rentals.DTOs
+@using CarRentalService.UseCases.Vehicles.Vehicles
+@using Microsoft.AspNetCore.Authorization
+
+@attribute [Authorize]
+
+@rendermode InteractiveServer
+
+@inject ICustomerService CustomerService
+@inject IVehicleService VehicleService
+@inject IRentalService RentalService
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager NavigationManager
+@inject ISnackbar Snackbar
+
+<PageTitle>Create Rental</PageTitle>
+
+<h3 class="m-2">Create Rental</h3>
+
+<MudPaper Class="p-4 m-2">
+    <MudForm>
+        
+        <MudTextField
+            @bind-Value="@VehicleName"
+            ReadOnly="@true"
+            Adornment="@Adornment.Start"
+            AdornmentIcon="@Icons.Material.Filled.Search"
+            AdornmentColor="@Color.Info"
+            OnAdornmentClick="@(() => NavigationManager.NavigateTo("/vehicles/true"))"
+            Label="Vehicle"/>
+
+        <MudSelect
+            @bind-Value="@CustomerId"
+            Placeholder="Select Customer"
+            Label="Select Customer">
+
+            @foreach (var customer in _customerPreviews)
+            {
+                <MudSelectItem
+                    Value="@customer.Id.ToString()">
+                    @customer.FullName
+                </MudSelectItem>
+            }
+
+        </MudSelect>
+
+        <MudDatePicker
+            Label="Start Date"
+            @bind-Date="@_createRentalDto.StartDate"/>
+
+        <MudDatePicker
+            Label="End Date"
+            @bind-Date="@_createRentalDto.EndDate"/>
+
+    </MudForm>
+    
+    <MudButton
+        Variant="Variant.Filled"
+        Color="Color.Primary"
+        OnClick="@CreateRentalHandler">
+        Create Rental
+    </MudButton>
+</MudPaper>
+
+@code {
+    
+    [Parameter]
+    public Guid VehicleId { get; set; }
+    
+    private readonly CreateRentalDto _createRentalDto = new();
+    
+    private string CustomerId
+    {
+        get => _createRentalDto.CustomerId == Guid.Empty 
+            ? string.Empty 
+            : _createRentalDto.CustomerId.ToString();
+        set => _createRentalDto.CustomerId = Guid.Parse(value);
+    }
+
+    private string VehicleName { get; set; } = string.Empty;
+
+    private List<CustomerPreviewDto> _customerPreviews = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Task.WhenAll(LoadCustomers(), LoadVehicleName());
+        
+        await base.OnInitializedAsync();
+    }
+    
+    private async Task LoadCustomers()
+    {
+        var customersResult = await CustomerService.GetAllCustomersAsync();
+        
+        if (customersResult.IsFailed)
+        {
+            Snackbar.Add("Failed to load customers", Severity.Error);
+            return;
+        }
+        
+        _customerPreviews = customersResult.Value.ToList();
+    }
+    
+    private async Task LoadVehicleName()
+    {
+        if(VehicleId == Guid.Empty)
+        { 
+            return;
+        }
+        
+        var vehiclesResult = await VehicleService.GetVehicleNameAsync(VehicleId);
+        
+        if (vehiclesResult.IsFailed)
+        {
+            Snackbar.Add("Failed to load vehicle", Severity.Error);
+            return;
+        }
+        
+        VehicleName = vehiclesResult.Value;
+    }
+    
+    private async Task CreateRentalHandler()
+    {
+        var authenticationState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        
+        var employeeId = authenticationState.User.Claims
+            .First( e => e.Type == ClaimTypes.NameIdentifier)
+            .Value;
+        
+        _createRentalDto.EmployeeId = Guid.Parse(employeeId);
+        _createRentalDto.VehicleId = VehicleId;
+        
+        var result = await RentalService.CreateRentalAsync(_createRentalDto);
+        
+        if (result.IsFailed)
+        {
+            Snackbar.Add(result.Errors.First().Message, Severity.Error);
+            return;
+        }
+        
+        NavigationManager.NavigateTo("/rentals");
+    }
+}

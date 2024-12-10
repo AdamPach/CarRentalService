@@ -16,6 +16,8 @@ public class Rental : IEntity
     
     public required RentalDateRange RentalDateRange { get; set; }
     
+    public decimal TotalPrice { get; set; }
+    
     public required Guid VehicleId { get; set; }
     
     public Vehicle? Vehicle { get; set; }

@@ -3,10 +3,20 @@
 @using CarRentalService.UseCases.Rentals
 @using CarRentalService.UseCases.Rentals.DTOs
 
+@rendermode InteractiveServer
+
 @inject IRentalService RentalService
 @inject ISnackbar Snackbar
+@inject NavigationManager NavigationManager
 
 <PageTitle>Active Rentals</PageTitle>
+
+<MudButton
+    Variant="Variant.Filled"
+    Color="Color.Primary"
+    OnClick="@(() => NavigationManager.NavigateTo("/rentals/create"))">
+    Create Rental
+</MudButton>
 
 <MudTable
     T="@RentalPreviewDto"

@@ -51,6 +51,7 @@
         List<Claim> claims =
         [
             new Claim(ClaimTypes.Name, result.Value.Username),
+            new Claim(ClaimTypes.NameIdentifier, result.Value.Id.ToString()),
             new Claim(ClaimTypes.Role, result.Value.Role.ToString())
         ];
 

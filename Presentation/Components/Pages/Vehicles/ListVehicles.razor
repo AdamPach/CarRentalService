@@ -47,6 +47,7 @@
     T="@VehiclePreviewDto"
     Items="@_vehicles"
     Hover="@true"
+    OnRowClick="SelectCar"
     RowClass="cursor-pointer">
     
     <HeaderContent>
@@ -106,4 +107,10 @@
     }
 
     private Task SearchVehicles() => LoadVehicles();
+
+    private void SelectCar(TableRowClickEventArgs<VehiclePreviewDto> args)
+    {
+        NavigationManager.NavigateTo("/rentals/create/" + args.Item!.Id);
+    }
+
 }

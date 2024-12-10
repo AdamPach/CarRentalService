@@ -1,6 +1,6 @@
 ﻿namespace CarRentalService.Domain.Rentals.ValueObjects;
 
-public record RentalDateRange(DateTime StartDate, DateTime EndDate, DateTime? ReturnDate)
+public record RentalDateRange(DateTime StartDate, DateTime EndDate, DateTime? ReturnDate = null)
 {
     public bool IsDateRangeValid()
     {

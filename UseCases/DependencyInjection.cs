@@ -44,6 +44,7 @@ public static class DependencyInjection
         hostBuilder.Services.AddScoped<ICarService, CarService>();
         
         hostBuilder.Services.AddScoped<IRentalService, RentalService>();
-        hostBuilder.Services.AddScoped<IMapper<Rental, RentalPreviewDto>, RentalToPreviewDtoMapper>();
+        hostBuilder.Services.AddTransient<IMapper<Rental, RentalPreviewDto>, RentalToPreviewDtoMapper>();
+        hostBuilder.Services.AddTransient<IMapper<CreateRentalDto, Rental>, CreateRentalToEntityMapper>();
     }
 }

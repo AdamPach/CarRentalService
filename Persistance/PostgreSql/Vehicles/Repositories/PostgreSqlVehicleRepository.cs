@@ -52,4 +52,33 @@ public class PostgreSqlVehicleRepository : IVehicleRepository
         
         return Result.Ok(vehicles);
     }
+
+    public async Task<Result<Vehicle>> GetByIdAsync(Guid vehicleId)
+    {
+        var sqlBuilder = new SqlBuilder();
+        
+        sqlBuilder.Where(@"""Id"" = @VehicleId", new { VehicleId = vehicleId });
+        
+        var query = sqlBuilder.AddTemplate(QueryTemplate);
+        
+        await using var connection = 
+            await _connectionFactory.CreateConnection();
+        
+        var vehicles = await connection
+            .QueryAsync<Vehicle, Manufacturer, Vehicle>(query.RawSql, param: query.Parameters, 
+                map: (vehicle, manufacturer) =>
+                {
+                    vehicle.Manufacturer = manufacturer;
+                    return vehicle;
+                }, splitOn:"Name");
+        
+        var vehicle = vehicles.FirstOrDefault();
+        
+        if (vehicle == null)
+        {
+            return Result.Fail("Vehicle not found");
+        }
+        
+        return Result.Ok(vehicle);
+    }
 }

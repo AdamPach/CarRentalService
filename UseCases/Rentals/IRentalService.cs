@@ -6,4 +6,5 @@ namespace CarRentalService.UseCases.Rentals;
 public interface IRentalService
 {
     Task<Result<IEnumerable<RentalPreviewDto>>> GetActiveRentalsAsync();
+    Task<Result> CreateRentalAsync(CreateRentalDto createRentalDto);
 }

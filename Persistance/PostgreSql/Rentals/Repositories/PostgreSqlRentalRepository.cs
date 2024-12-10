@@ -4,7 +4,6 @@ using CarRentalService.Domain.Rentals.Entities;
 using CarRentalService.Domain.Rentals.ValueObjects;
 using CarRentalService.Domain.Vehicles.Entities;
 using CarRentalService.Domain.Vehicles.ValueObjects;
-using CarRentalService.Persistence.PostgreSql.Common;
 using CarRentalService.Persistence.PostgreSql.Database;
 using CarRentalService.Persistence.PostgreSql.Rentals.Mappers;
 using CarRentalService.UseCases.Rentals.Repositories;
@@ -64,5 +63,43 @@ public class PostgreSqlRentalRepository : IRentalRepository
                 }, splitOn: "Id,StartDate,Id,Id,Name");
         
         return Result.Ok(rentals);
+    }
+
+    public async Task<Result<Rental>> CreateRentalAsync(Rental rental)
+    {
+        rental.Id = Guid.NewGuid();
+        
+        var parameters = new
+        {
+            rental.Id,
+            rental.Status,
+            rental.TotalPrice,
+            rental.CustomerId,
+            rental.VehicleId,
+            rental.EmployeeId,
+            rental.RentalDateRange.StartDate,
+            rental.RentalDateRange.EndDate,
+        };
+        
+        const string insertCommand = 
+            @"INSERT INTO ""Rentals"" (""Id"", ""Status"", ""TotalPrice"", ""CustomerId"", ""VehicleId"", ""EmployeeId"",""StartDate"", ""EndDate"")
+              VALUES (@Id, @Status, @TotalPrice, @CustomerId, @VehicleId, @EmployeeId, @StartDate, @EndDate)";
+        
+        var connection = await _connectionFactory.CreateConnection();
+        
+        await using var transaction = await connection.BeginTransactionAsync();
+        
+        try
+        {
+            await connection.ExecuteAsync(insertCommand, parameters);
+        }
+        catch (Exception)
+        {
+            await transaction.RollbackAsync();
+            return Result.Fail("Failed to create rental");
+        }
+
+        await transaction.CommitAsync();
+        return rental;
     }
 }
