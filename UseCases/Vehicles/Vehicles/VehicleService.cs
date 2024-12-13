@@ -44,6 +44,6 @@ internal sealed class VehicleService : IVehicleService
             return Result.Fail<string>(vehicleName.Errors);
         }
         
-        return Result.Ok(vehicleName.Value.Name);
+        return Result.Ok($"{vehicleName.Value.Name} - {vehicleName.Value.LicensePlate}");;
     }
 }

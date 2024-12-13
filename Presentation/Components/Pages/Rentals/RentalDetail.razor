@@ -1,0 +1,96 @@
+﻿@page "/rentals/{RentalId:guid}"
+
+@using CarRentalService.Domain.Rentals.Enums
+@using CarRentalService.UseCases.Rentals
+@using CarRentalService.UseCases.Rentals.DTOs
+@using Microsoft.AspNetCore.Authorization
+
+@attribute [Authorize]
+
+@rendermode InteractiveServer
+
+@inject ISnackbar Snackbar
+@inject IRentalService RentalService
+
+<PageTitle>Rental Detail</PageTitle>
+
+@if (RentalDetailDto != null)
+{
+    <h2 class="p-4 m-2">Rental @RentalDetailDto!.Id</h2>
+
+    <MudPaper Class="p-4 m-2">
+        <MudText>Vehicle: @RentalDetailDto!.VehicleName</MudText>
+        <MudText>Customer: @RentalDetailDto!.CustomerName</MudText>
+        <MudText>Start Date: @RentalDetailDto!.RentalDateRange.StartDate</MudText>
+        <MudText>End Date: @RentalDetailDto!.RentalDateRange.EndDate</MudText>
+        <MudText>Return Date: @RentalDetailDto!.RentalDateRange.ReturnDate</MudText>
+        <MudText>Status: @RentalDetailDto!.Status.ToString()</MudText>
+        <MudText>Cost: @RentalDetailDto!.TotalPrice</MudText>
+    </MudPaper>
+    
+    @if(RentalDetailDto!.Status == RentalStatus.Active)
+    {
+        <MudPaper Class="p-4 m-2">
+            <MudForm>
+                <MudNumericField Class="mt-2" Label="Additional Cost" @bind-Value="@_returnRentalDto.AdditionalCosts"/>
+                <MudDatePicker Class="mt-2" Label="Return Date" @bind-Date="@_returnRentalDto.ReturnDate"/>
+                
+                <MudButton
+                    Class="mt-2"
+                    Variant="Variant.Filled"
+                    Color="Color.Primary"
+                    OnClick="@ReturnRentalHandler">
+                    Return Rental
+                </MudButton>
+            </MudForm>
+        </MudPaper>
+    }
+}
+else
+{
+    <p>Rental not found</p>
+}
+
+
+@code {
+    [Parameter] public Guid RentalId { get; set; }
+
+    private RentalDetailDto? RentalDetailDto { get; set; }
+    
+    private readonly ReturnRentalDto _returnRentalDto = new();
+
+    protected override Task OnInitializedAsync()
+    {
+        return LoadRentalDetail();
+    }
+    
+    private async Task LoadRentalDetail()
+    {
+        var result = await RentalService.GetRentalDetailAsync(RentalId);
+
+        if (result.IsFailed)
+        {
+            Snackbar.Add("Failed to load rental", Severity.Error);
+            return;
+        }
+
+        RentalDetailDto = result.Value;
+    }
+
+    private async Task ReturnRentalHandler()
+    {
+        _returnRentalDto.RentalId = RentalId;
+        
+        var result = await RentalService.ReturnRentalAsync(_returnRentalDto);
+        
+        if (result.IsFailed)
+        {
+            Snackbar.Add("Failed to return rental", Severity.Error);
+            return;
+        }
+        
+        Snackbar.Add("Rental returned", Severity.Success);
+        await LoadRentalDetail();
+    }
+
+}

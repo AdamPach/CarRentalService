@@ -11,6 +11,7 @@ using CarRentalService.UseCases.Persons.Employees.Mappers;
 using CarRentalService.UseCases.Rentals;
 using CarRentalService.UseCases.Rentals.DTOs;
 using CarRentalService.UseCases.Rentals.Mappers;
+using CarRentalService.UseCases.Rentals.Updaters;
 using CarRentalService.UseCases.Vehicles.Cars;
 using CarRentalService.UseCases.Vehicles.Cars.DTOs;
 using CarRentalService.UseCases.Vehicles.Cars.Mappers;
@@ -46,5 +47,7 @@ public static class DependencyInjection
         hostBuilder.Services.AddScoped<IRentalService, RentalService>();
         hostBuilder.Services.AddTransient<IMapper<Rental, RentalPreviewDto>, RentalToPreviewDtoMapper>();
         hostBuilder.Services.AddTransient<IMapper<CreateRentalDto, Rental>, CreateRentalToEntityMapper>();
+        hostBuilder.Services.AddTransient<IMapper<Rental, RentalDetailDto>, RentalToDetailDtoMapper>();
+        hostBuilder.Services.AddTransient<ReturnRentalUpdater>();
     }
 }

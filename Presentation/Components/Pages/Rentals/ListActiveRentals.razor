@@ -22,6 +22,7 @@
     T="@RentalPreviewDto"
     Items="@_rentalPreviewDtos"
     Hover="@true"
+    OnRowClick="RentalClickHandler"
     RowClass="cursor-pointer">
     
     <HeaderContent>
@@ -62,4 +63,8 @@
         await base.OnInitializedAsync();
     }
 
+    private void RentalClickHandler(TableRowClickEventArgs<RentalPreviewDto> args)
+    {
+        NavigationManager.NavigateTo($"/rentals/{args.Item!.Id}");
+    }
 }

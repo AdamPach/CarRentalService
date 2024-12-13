@@ -26,7 +26,7 @@ public class PostgreSqlRentalRepository : IRentalRepository
     }
     
     private const string QueryTemplateWithCustomerAndVehicle = 
-        @"SELECT ""Rentals"".""Id"", ""Status"", ""TotalPrice"", ""CustomerId"", ""VehicleId"",
+        @"SELECT ""Rentals"".""Id"", ""Status"", ""TotalPrice"", ""CustomerId"", ""VehicleId"", ""EmployeeId"",
           ""StartDate"", ""EndDate"", ""ReturnDate"",
             ""Person"".*, ""Vehicle"".*, ""Vehicle"".""BrandName"" AS ""Name""
           FROM ""Rentals""
@@ -65,6 +65,27 @@ public class PostgreSqlRentalRepository : IRentalRepository
         return Result.Ok(rentals);
     }
 
+    public async Task<Result<Rental>> GetByIdWithCustomerAndVehicleAsync(Guid rentalId)
+    {
+        var criteria = new RentalCriteria { RentalId = rentalId };
+        
+        var result = await GetAllWithCustomerAndVehicleAsync(criteria);
+        
+        if(result.IsFailed)
+        {
+            return Result.Fail<Rental>("Failed to get rental");
+        }
+        
+        var rentals = result.Value.ToList();
+
+        return rentals.Count switch
+        {
+            0 => Result.Fail<Rental>("Rental not found"),
+            > 1 => Result.Fail<Rental>("More than one rental found"),
+            _ => Result.Ok(rentals.Single())
+        };
+    }
+
     public async Task<Result<Rental>> CreateRentalAsync(Rental rental)
     {
         rental.Id = Guid.NewGuid();
@@ -101,5 +122,40 @@ public class PostgreSqlRentalRepository : IRentalRepository
 
         await transaction.CommitAsync();
         return rental;
+    }
+
+    public async Task<Result> UpdateRentalAsync(Rental rental)
+    {
+        var parameters = new
+        {
+            rental.Id,
+            rental.Status,
+            rental.TotalPrice,
+            rental.CustomerId,
+            rental.VehicleId,
+            rental.EmployeeId,
+            rental.RentalDateRange.StartDate,
+            rental.RentalDateRange.EndDate,
+            rental.RentalDateRange.ReturnDate,
+        };
+
+        const string updateCommand = @"
+            UPDATE ""Rentals""
+            SET ""Status"" = @Status, ""TotalPrice"" = @TotalPrice, ""CustomerId"" = @CustomerId, ""VehicleId"" = @VehicleId, 
+                ""EmployeeId"" = @EmployeeId, ""StartDate"" = @StartDate, ""EndDate"" = @EndDate, ""ReturnDate"" = @ReturnDate
+            WHERE ""Id"" = @Id";
+        
+        await using var connection = await _connectionFactory.CreateConnection();
+        
+        try
+        {
+            await connection.ExecuteAsync(updateCommand, parameters);
+        }
+        catch (Exception)
+        {
+            return Result.Fail("Failed to create rental");
+        }
+        
+        return Result.Ok();
     }
 }

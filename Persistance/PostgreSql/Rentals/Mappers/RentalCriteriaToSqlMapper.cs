@@ -22,6 +22,11 @@ public class RentalCriteriaToSqlMapper : CriteriaToSqlMapper<RentalCriteria>
         {
             sqlBuilder.Where(@"""Status"" = @Status", new { from.Status });
         }
+        
+        if(from.RentalId != Guid.Empty)
+        {
+            sqlBuilder.Where(@"""Rentals"".""Id"" = @RentalId", new { from.RentalId });
+        }
 
         return sqlBuilder;
     }

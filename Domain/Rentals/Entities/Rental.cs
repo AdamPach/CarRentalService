@@ -29,4 +29,9 @@ public class Rental : IEntity
     public required Guid EmployeeId { get; set; }
     
     public Employee? Employee { get; set; }
+    
+    public decimal CalculateTotalPrice()
+    {
+        return (RentalDateRange.ReturnDate! - RentalDateRange.StartDate).Value.Days * Vehicle!.PricePerDay;
+    }
 }

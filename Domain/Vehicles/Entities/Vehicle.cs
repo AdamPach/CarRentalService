@@ -28,5 +28,5 @@ public class Vehicle : IEntity
 
     public ICollection<Rental>? Rentals { get; set; }
     
-    public string Name => $"{Manufacturer.Name} {Model}";
+    public string Name => $"{Manufacturer.Name} {Model} - {LicensePlate}";
 }
