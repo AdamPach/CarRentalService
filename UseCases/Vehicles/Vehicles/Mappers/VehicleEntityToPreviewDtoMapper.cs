@@ -1,4 +1,5 @@
-﻿using CarRentalService.Domain.Vehicles.Entities;
+﻿using CarRentalService.Domain.Rentals.Enums;
+using CarRentalService.Domain.Vehicles.Entities;
 using CarRentalService.UseCases.Common;
 using CarRentalService.UseCases.Vehicles.Vehicles.DTOs;
 using FluentResults;
@@ -18,7 +19,8 @@ internal sealed class VehicleEntityToPreviewDtoMapper
             VehicleType = from.VehicleType.ToString(),
             PricePerDay = from.PricePerDay,
             EngineType = from.EngineType.ToString(),
-            Seats = from.Seats
+            Seats = from.Seats,
+            IsRented = from.Rentals?.Any( r => r.Status == RentalStatus.Active) ?? false
         };
 
         return vehiclePreview;

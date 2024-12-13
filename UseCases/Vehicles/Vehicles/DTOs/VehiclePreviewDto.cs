@@ -9,4 +9,5 @@ public class VehiclePreviewDto
     public decimal PricePerDay { get; set; }
     public required string EngineType { get; set; }
     public int Seats { get; set; }
+    public required bool IsRented { get; set; }
 }
