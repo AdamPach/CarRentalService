@@ -23,6 +23,8 @@ public static class DependencyInjection
         hostBuilder.Services.AddTransient<EmployeeCriteriaToFilterTypeMapper>();
         
         hostBuilder.Services.AddScoped<ICustomerRepository, JsonFileCustomersRepository>();
+        hostBuilder.Services.AddTransient<CustomerCriteriaToFilterTypeMapper>();
+        
         hostBuilder.Services.AddScoped<IVehicleRepository, JsonFileVehicleRepository>();
         hostBuilder.Services.AddScoped<ICarRepository, JsonFileCarRepository>();
         hostBuilder.Services.AddScoped<IRentalRepository, JsonFileRentalRepository>();

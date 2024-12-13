@@ -5,7 +5,7 @@ using FluentResults;
 
 namespace CarRentalService.Persistence.JsonFile.People.Mappers;
 
-public class EmployeeCriteriaToFilterTypeMapper : CriteriaToLinqMapper<Employee, EmployeeCriteria>
+internal sealed class EmployeeCriteriaToFilterTypeMapper : CriteriaToLinqMapper<Employee, EmployeeCriteria>
 {
     public override Result<LinqFilterType<Employee>> Map(EmployeeCriteria from)
     {
