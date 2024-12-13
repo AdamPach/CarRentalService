@@ -16,6 +16,8 @@ internal sealed class JsonFileCarRepository : ICarRepository
 
     public async Task<Result> InsertAsync(Car car)
     {
+        car.Id = Guid.NewGuid();
+        
         var result = await _carFileManager.ReadFromFileAsync();
         
         if (result.IsFailed)

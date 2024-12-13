@@ -1,6 +1,7 @@
 ﻿using CarRentalService.Persistence.JsonFile.FileManager;
 using CarRentalService.Persistence.JsonFile.People.Mappers;
 using CarRentalService.Persistence.JsonFile.People.Repositories;
+using CarRentalService.Persistence.JsonFile.Rentals.Mappers;
 using CarRentalService.Persistence.JsonFile.Rentals.Repositories;
 using CarRentalService.Persistence.JsonFile.Vehicles.Mappers;
 using CarRentalService.Persistence.JsonFile.Vehicles.Repositories;
@@ -30,6 +31,8 @@ public static class DependencyInjection
         hostBuilder.Services.AddTransient<VehicleCriteriaToFilterTypeMapper>();
         
         hostBuilder.Services.AddScoped<ICarRepository, JsonFileCarRepository>();
+        
         hostBuilder.Services.AddScoped<IRentalRepository, JsonFileRentalRepository>();
+        hostBuilder.Services.AddTransient<RentalCriteriaToFilterTypeMapper>();
     }
 }

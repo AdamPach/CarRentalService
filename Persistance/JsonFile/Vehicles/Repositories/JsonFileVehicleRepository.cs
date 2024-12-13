@@ -55,13 +55,11 @@ internal sealed class JsonFileVehicleRepository : IVehicleRepository
             return Result.Fail<IEnumerable<Vehicle>>(rentalsResult.Errors);
         }
         
-        var rentals = rentalsResult.Value;
+        var rentals = rentalsResult.Value.ToList();
 
-        foreach (var rental in rentals)
+        foreach (var vehicle in vehicles)
         {
-            var vehicle = vehicles.Single(v => v.Id == rental.VehicleId);
-            vehicle.Rentals ??= new List<Rental>();
-            vehicle.Rentals.Add(rental);
+            vehicle.Rentals = rentals.Where(r => r.VehicleId == vehicle.Id).ToList();
         }
 
         var filterType = _vehicleCriteriaToFilterTypeMapper.Map(criteria).Value;
