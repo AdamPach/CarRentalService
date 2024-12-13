@@ -1,4 +1,5 @@
-﻿using CarRentalService.Domain.Vehicles.Criteria;
+﻿using CarRentalService.Domain.Rentals.Entities;
+using CarRentalService.Domain.Vehicles.Criteria;
 using CarRentalService.Domain.Vehicles.Entities;
 using CarRentalService.Domain.Vehicles.ValueObjects;
 using CarRentalService.Persistence.PostgreSql.Common;
@@ -23,8 +24,10 @@ public class PostgreSqlVehicleRepository : IVehicleRepository
     }
 
     private const string QueryTemplate = 
-        @"SELECT ""Id"", ""DateOfManufacture"", ""Model"", ""LicensePlate"", ""Color"", ""Seats"", ""EngineType"", ""PricePerDay"", ""VehicleType"", ""BrandName"" AS ""Name""
-        FROM ""Vehicle"" /**innerjoin**//**where**/";
+        @"SELECT ""Vehicle"".""Id"", ""DateOfManufacture"", ""Model"", ""LicensePlate"", ""Color"", ""Seats"", ""EngineType"", ""PricePerDay"", ""VehicleType"", ""BrandName"" AS ""Name"",
+            ""Rentals"".*
+        FROM ""Vehicle"" 
+            LEFT JOIN ""Rentals"" on ""Vehicle"".""Id"" = ""Rentals"".""VehicleId""/**where**/";
 
     public async Task<Result<IEnumerable<Vehicle>>> GetAllAsync(VehicleCriteria criteria)
     {
@@ -43,12 +46,17 @@ public class PostgreSqlVehicleRepository : IVehicleRepository
             await _connectionFactory.CreateConnection();
 
         var vehicles = await connection
-            .QueryAsync<Vehicle, Manufacturer, Vehicle>(query.RawSql, param: query.Parameters, 
-                map: (vehicle, manufacturer) =>
+            .QueryAsync<Vehicle, Manufacturer, Rental?, Vehicle>(query.RawSql, param: query.Parameters, 
+                map: (vehicle, manufacturer, rental) =>
             {
                 vehicle.Manufacturer = manufacturer;
+                vehicle.Rentals ??= new List<Rental>();
+                if (rental != null)
+                {
+                    vehicle.Rentals.Add(rental);
+                }
                 return vehicle;
-            }, splitOn:"Name");
+            }, splitOn:"Name,Id");
         
         return Result.Ok(vehicles);
     }
@@ -57,7 +65,7 @@ public class PostgreSqlVehicleRepository : IVehicleRepository
     {
         var sqlBuilder = new SqlBuilder();
         
-        sqlBuilder.Where(@"""Id"" = @VehicleId", new { VehicleId = vehicleId });
+        sqlBuilder.Where(@"""Vehicle"".""Id"" = @VehicleId", new { VehicleId = vehicleId });
         
         var query = sqlBuilder.AddTemplate(QueryTemplate);
         
@@ -65,12 +73,17 @@ public class PostgreSqlVehicleRepository : IVehicleRepository
             await _connectionFactory.CreateConnection();
         
         var vehicles = await connection
-            .QueryAsync<Vehicle, Manufacturer, Vehicle>(query.RawSql, param: query.Parameters, 
-                map: (vehicle, manufacturer) =>
+            .QueryAsync<Vehicle, Manufacturer, Rental?, Vehicle>(query.RawSql, param: query.Parameters, 
+                map: (vehicle, manufacturer, rental) =>
                 {
                     vehicle.Manufacturer = manufacturer;
+                    vehicle.Rentals ??= new List<Rental>();
+                    if (rental != null)
+                    {
+                        vehicle.Rentals.Add(rental);
+                    }
                     return vehicle;
-                }, splitOn:"Name");
+                }, splitOn:"Name,Id");
         
         var vehicle = vehicles.FirstOrDefault();
         

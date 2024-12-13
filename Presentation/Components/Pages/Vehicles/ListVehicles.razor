@@ -57,6 +57,7 @@
         <MudTd>Engine Type</MudTd>
         <MudTd>Vehicle Type</MudTd>
         <MudTd>Price Per Day</MudTd>
+        <MudTd>Is Rented</MudTd>
     </HeaderContent>
     
     <RowTemplate>
@@ -66,6 +67,7 @@
         <MudTd DataLabel="Engine Type">@context.EngineType</MudTd>
         <MudTd DataLabel="Vehicle Type">@context.VehicleType</MudTd>
         <MudTd DataLabel="Price Per Day">@context.PricePerDay</MudTd>
+        <MudTd DataLabel="Is Rented">@context.IsRented</MudTd>
     </RowTemplate>
     
 </MudTable>
@@ -110,6 +112,12 @@
 
     private void SelectCar(TableRowClickEventArgs<VehiclePreviewDto> args)
     {
+        if(args.Item?.IsRented == true)
+        {
+            Snackbar.Add("Vehicle is already rented", Severity.Error);
+            return;
+        }
+        
         NavigationManager.NavigateTo("/rentals/create/" + args.Item!.Id);
     }
 
