@@ -23,7 +23,18 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 builder.Services.AddAuthorization();
 builder.Services.AddCascadingAuthenticationState();
 
-builder.AddJsonFile();
+switch (builder.Configuration["Storage"])
+{
+    case "Json":
+        builder.AddJsonFile();
+        break;
+    case "PostgreSql":
+        builder.AddPostgreSql();
+        break;
+    default:
+        throw new InvalidOperationException("Invalid storage configuration");
+}
+
 builder.AddUseCases();
 builder.Services.AddMudServices();
 

@@ -5,7 +5,14 @@
 <h1>Hello</h1>
 <h2>Welcome to the Car Rental Service</h2>
 
-<p>For more access please log in</p>
+<AuthorizeView>
+    <Authorized>
+        <p>You are logged in</p>
+    </Authorized>
+    <NotAuthorized>
+        <p>You are not logged in</p>
+    </NotAuthorized>
+</AuthorizeView>
 
 @code{
     
