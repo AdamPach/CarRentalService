@@ -69,9 +69,4 @@ internal sealed class PostgreSqlEmployeeRepository : IEmployeeRepository
 
         return employees;
     }
-
-    public Task<Result<Employee>> GetByIdAsync(Guid id)
-    {
-        throw new NotImplementedException();
-    }
 }

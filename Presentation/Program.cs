@@ -1,9 +1,8 @@
 using System.Security.Claims;
+using CarRentalService.Persistence.JsonFile;
 using CarRentalService.Persistence.PostgreSql;
 using CarRentalService.Presentation.Components;
 using CarRentalService.UseCases;
-using CarRentalService.UseCases.Persons.Employees;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using MudBlazor.Services;
 
@@ -24,7 +23,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 builder.Services.AddAuthorization();
 builder.Services.AddCascadingAuthenticationState();
 
-builder.AddPostgreSql();
+builder.AddJsonFile();
 builder.AddUseCases();
 builder.Services.AddMudServices();
 
