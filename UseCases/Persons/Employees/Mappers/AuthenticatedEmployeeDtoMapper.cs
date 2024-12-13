@@ -18,6 +18,7 @@ public class AuthenticatedEmployeeDtoMapper : IMapper<Employee, AuthenticatedEmp
 
         return Result.Ok(new AuthenticatedEmployeeDto
         {
+            Id = from.Id,
             Username = from.FullName,
             Role = role
         });

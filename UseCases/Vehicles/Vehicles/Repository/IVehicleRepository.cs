@@ -7,4 +7,5 @@ namespace CarRentalService.UseCases.Vehicles.Vehicles.Repository;
 public interface IVehicleRepository
 {
     Task<Result<IEnumerable<Vehicle>>> GetAllAsync(VehicleCriteria criteria);
+    Task<Result<Vehicle>> GetByIdAsync(Guid vehicleId);
 }

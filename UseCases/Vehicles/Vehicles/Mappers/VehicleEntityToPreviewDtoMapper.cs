@@ -12,6 +12,7 @@ internal sealed class VehicleEntityToPreviewDtoMapper
     {
         var vehiclePreview = new VehiclePreviewDto
         {
+            Id = from.Id,
             Brand = from.Manufacturer.Name,
             Model = from.Model,
             VehicleType = from.VehicleType.ToString(),

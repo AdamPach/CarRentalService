@@ -1,5 +1,4 @@
-﻿using CarRentalService.Domain.Vehicles.Criteria;
-using CarRentalService.Domain.Vehicles.Entities;
+﻿using CarRentalService.Domain.Vehicles.Entities;
 using CarRentalService.UseCases.Common;
 using CarRentalService.UseCases.Vehicles.Vehicles.DTOs;
 using CarRentalService.UseCases.Vehicles.Vehicles.Repository;
@@ -34,5 +33,17 @@ internal sealed class VehicleService : IVehicleService
             .Select(vehicle => _previewMapper.Map(vehicle).Value);
         
         return Result.Ok(vehiclePreviews);
+    }
+
+    public async Task<Result<string>> GetVehicleNameAsync(Guid vehicleId)
+    {
+        var vehicleName = await _vehicleRepository.GetByIdAsync(vehicleId);
+        
+        if (vehicleName.IsFailed)
+        {
+            return Result.Fail<string>(vehicleName.Errors);
+        }
+        
+        return Result.Ok(vehicleName.Value.Name);
     }
 }
