@@ -17,7 +17,6 @@ internal class RentalService : IRentalService
     private readonly IMapper<Rental, RentalDetailDto> _rentalToDetailDtoMapper;
     private readonly ReturnRentalUpdater _returnRentalUpdater;
     private readonly IValidator<(ReturnRentalDto, Rental)> _returnRentalValidator;
-    
     private readonly IValidator<CreateRentalDto> _createRentalDtoValidator;
     private readonly IMapper<CreateRentalDto, Rental> _createRentalDtoToRentalMapper;
 
